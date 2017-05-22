@@ -1,0 +1,30 @@
+{
+  "name": "face-selenium",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.2",
+    "selenium-webdriver": "^3.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfonseca9009/face-selenium-webdriver.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cfonseca9009/face-selenium-webdriver/issues"
+  },
+  "engines": {
+    "node": "6.10.3",
+    "npm": "4.5.0"
+  },
+  "homepage": "https://github.com/cfonseca9009/face-selenium-webdriver#readme"
+}
