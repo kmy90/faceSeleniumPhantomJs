@@ -17,10 +17,16 @@ app.post('/sendMessage', function(req, res) {
     var password = req.body.password;
     var recipientId = req.body.recipientId;
     var message = req.body.message;
+    var driver = undefined;
+    try {
+        driver = new webdriver.Builder()
+            .forBrowser('phantomjs')
+            .build();
+    } catch (e) {
+        res.status(501).send(e);
+    }
 
-    var driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
-        .build();
+
     driver.get('https://facebook.com/login/');
     driver.wait(function() {
         return driver.getTitle().then(function(title) {
