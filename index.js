@@ -144,7 +144,7 @@ app.get('/error', function(request, response) {
         u.a.b();
         response.status(200).send("done");
     } catch (e) {
-        response.status(500).send(SON.stringify(e));
+        response.status(500).send(JSON.stringify(e));
     }
 });
 
@@ -154,35 +154,39 @@ app.listen(app.get('port'), function() {
 
 app.post('/sendMessage', function(request, response) {
     //Get Credentials
-    var username = request.body.username;
-    var password = request.body.password;
-    var recipientId = request.body.recipientId;
-    var message = request.body.message;
+    try {
+        var username = request.body.username;
+        var password = request.body.password;
+        var recipientId = request.body.recipientId;
+        var message = request.body.message;
 
-    var driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
-        .build();
+        var driver = new webdriver.Builder()
+            .forBrowser('phantomjs')
+            .build();
 
-    //Login
-    driver.get('https://www.facebook.com/messages/t/' + recipientId);
-    //Write the message and press Return
-    driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
-    driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
-    driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
+        //Login
+        driver.get('https://www.facebook.com/messages/t/' + recipientId);
+        //Write the message and press Return
+        driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
+        driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
+        driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
 
-    //Access to messenger directly to page to write    
-    driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.ENTER);
+        //Access to messenger directly to page to write    
+        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.ENTER);
 
 
-    driver.wait(function() {
-        return driver.getTitle().then(function(title) {
-            return title === 'Messenger';
+        driver.wait(function() {
+            return driver.getTitle().then(function(title) {
+                return title === 'Messenger';
+            });
+        }, 2000).then(function() {
+
+            response.status(200).send('Done');
+        }, function(error) {
+            response.status(200).send(error);
         });
-    }, 2000).then(function() {
-
-        response.status(200).send('Done');
-    }, function(error) {
-        response.status(200).send(error);
-    });
-    driver.quit();
+        driver.quit();
+    } catch (e) {
+        response.status(500).send(JSON.stringify(e));
+    }
 });
