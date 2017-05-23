@@ -1,32 +1,26 @@
-var webdriver = require('selenium-webdriver');
+//var webdriver = require('selenium-webdriver')
 var express = require('express')
 var app = express()
 
-var bodyParser = require('body-parser');
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+///var bodyParser = require('body-parser')
+//app.use(bodyParser.json()) // support json encoded bodies
+//app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
-var port = process.env.PORT || 8000;
-var By = webdriver.By;
-var until = webdriver.until;
+app.set('port', (process.env.PORT || 5000))
+    //var By = webdriver.By;
+    //var until = webdriver.until;
 
-
+/*
 app.post('/sendMessage', function(req, res) {
     //Get Credentials
     var username = req.body.username;
     var password = req.body.password;
     var recipientId = req.body.recipientId;
     var message = req.body.message;
-    var driver = undefined;
-    try {
-        driver = new webdriver.Builder()
-            .forBrowser('phantomjs')
-            .build();
-    } catch (e) {
-        res.status(501).send(e);
-        return;
-    }
-
+  
+    var  driver = new webdriver.Builder()
+        .forBrowser('phantomjs')
+        .build();
 
     driver.get('https://facebook.com/login/');
     driver.wait(function() {
@@ -53,11 +47,11 @@ app.post('/sendMessage', function(req, res) {
     driver.quit();
 });
 
-
+*/
 app.get('/test', function(req, res) {
     res.status(200).send('test');
 });
 
-app.listen(port, function(e) {
-        res.status(501).send(e);
+app.listen(app.get('port'), function() {
+        console.log('Example app listening on port: ', port);
     }) //
