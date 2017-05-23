@@ -116,7 +116,7 @@ app.post('/sendMessage', function(request, response) {
         response.status(500).send(error);
     });
 */
-    response.status(201).send(driver.getTitle());
+    response.status(201).send('sfsdfsd');
     //Close the test
     driver.quit();
 
