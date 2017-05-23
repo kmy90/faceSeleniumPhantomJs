@@ -53,6 +53,11 @@ app.post('/sendMessage', function(req, res) {
     driver.quit();
 });
 
+
+app.get('/test', function(req, res) {
+    res.status(200).send('test');
+});
+
 app.listen(port, function() {
         console.log('Example app listening on port: ', port)
     }) //
