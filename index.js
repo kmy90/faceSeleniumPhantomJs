@@ -24,6 +24,7 @@ app.post('/sendMessage', function(req, res) {
             .build();
     } catch (e) {
         res.status(501).send(e);
+        return;
     }
 
 
