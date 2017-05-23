@@ -1,14 +1,14 @@
 //var webdriver = require('selenium-webdriver')
-var express = require('express')
-var app = express()
+//var express = require('express')
+//var app = express()
 
 ///var bodyParser = require('body-parser')
 //app.use(bodyParser.json()) // support json encoded bodies
 //app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
-app.set('port', (process.env.PORT || 5000))
-    //var By = webdriver.By;
-    //var until = webdriver.until;
+//app.set('port', (process.env.PORT || 5000))
+//var By = webdriver.By;
+//var until = webdriver.until;
 
 /*
 app.post('/sendMessage', function(req, res) {
@@ -48,10 +48,27 @@ app.post('/sendMessage', function(req, res) {
 });
 
 */
-app.get('/test', function(req, res) {
-    res.status(200).send('test');
-});
+//app.get('/test', function(req, res) {
+//  res.status(200).send('test');
+//});
+
+//app.listen(app.get('port'), function() {
+// console.log('Example app listening on port: ', port);
+// }) //
+
+
+
+
+var express = require('express')
+var app = express()
+
+app.set('port', (process.env.PORT || 5000))
+app.use(express.static(__dirname + '/public'))
+
+app.get('/', function(request, response) {
+    response.send('Hello World!')
+})
 
 app.listen(app.get('port'), function() {
-        console.log('Example app listening on port: ', port);
-    }) //
+    console.log("Node app is running at localhost:" + app.get('port'))
+})
