@@ -108,7 +108,7 @@ app.post('/sendMessage', function(request, response) {
             driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
             return title === 'Messenger';
         });
-    }, 10000).then(function() {
+    }, 5000).then(function() {
         res.status(200).send('Done');
     }, function(error) {
         res.status(200).send(error);
