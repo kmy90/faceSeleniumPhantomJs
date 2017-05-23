@@ -93,8 +93,11 @@ app.post('/sendMessage', function(request, response) {
     var driver = new webdriver.Builder()
         .forBrowser('phantomjs')
         .build();
+
+    driver.get('https://facebook.com/login/');
+
     /*
-            driver.get('https://facebook.com/login/');
+            
 
             driver.wait(function() {
                 return driver.getTitle().then(function(title) {
