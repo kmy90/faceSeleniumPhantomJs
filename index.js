@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 var By = webdriver.By;
 var until = webdriver.until;
 
