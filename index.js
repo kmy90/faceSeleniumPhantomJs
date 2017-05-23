@@ -95,7 +95,7 @@ app.post('/sendMessage', function(request, response) {
         .build();
 
     driver.get('https://facebook.com/login/');
-    /*
+
     driver.wait(function() {
         return driver.getTitle().then(function(title) {
             //Login User
@@ -105,18 +105,19 @@ app.post('/sendMessage', function(request, response) {
 
             //Access to messenger directly to page to write
             driver.get('https://www.facebook.com/messages/t/' + recipientId);
-            return true;
+
         });
-    }, 5000).then(function() {
-        //Write the message and press Return
-        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
+    }, 10000).then(function() {
         response.status(201).send('Done');
+        //Write the message and press Return
+        // driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
+        // response.status(201).send('Done');
     }, function(error) {
         //future send error to org
         response.status(500).send(error);
     });
-*/
-    response.status(201).send('sfsdfsd');
+
+
     //Close the test
     driver.quit();
 
