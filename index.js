@@ -19,7 +19,7 @@ app.post('/sendMessage', function(req, res) {
     var message = req.body.message;
 
     var driver = new webdriver.Builder()
-        .forBrowser('/vendor/phantomjs')
+        .forBrowser('vendor/phantomjs')
         .build();
     driver.get('https://facebook.com/login/');
     driver.wait(function() {
