@@ -153,7 +153,7 @@ app.post('/sendMessage', function(request, response) {
     var message = request.body.message;
 
     var driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
+        .forBrowser('chrome')
         .build();
     //Login
     driver.get('https://www.messenger.com/t/' + recipientId);
@@ -171,11 +171,7 @@ app.post('/sendMessage', function(request, response) {
         driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
 
         //Access to messenger directly to page to write    
-        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message);
-        console.log(driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).getText());
         driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
-
-
         response.status(200).send('Done');
 
 
