@@ -1,4 +1,4 @@
-//var webdriver = require('selenium-webdriver')
+//
 //var express = require('express')
 //var app = express()
 
@@ -57,7 +57,7 @@ app.post('/sendMessage', function(req, res) {
 // }) //
 
 
-
+var webdriver = require('selenium-webdriver')
 
 var express = require('express')
 var app = express()
