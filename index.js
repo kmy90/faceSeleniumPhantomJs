@@ -68,9 +68,6 @@ app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
 var By = webdriver.By;
 
-
-
-
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
 
@@ -141,6 +138,16 @@ app.post('/phantomJS', function(request, response) {
 
 });
 
+app.get('/error', function(request, response) {
+    try {
+        var u = undefined;
+        u.a.b();
+        response.status(200).send("done");
+    } catch (e) {
+        response.status(500).send(SON.stringify(e));
+    }
+});
+
 app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
 })
@@ -155,9 +162,8 @@ app.post('/sendMessage', function(request, response) {
     var driver = new webdriver.Builder()
         .forBrowser('phantomjs')
         .build();
+
     //Login
-
-
     driver.get('https://www.facebook.com/messages/t/' + recipientId);
     //Write the message and press Return
     driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
