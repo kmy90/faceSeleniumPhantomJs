@@ -95,6 +95,7 @@ app.post('/sendMessage', function(request, response) {
         .build();
 
     driver.get('https://facebook.com/login/');
+    /*
     driver.wait(function() {
         return driver.getTitle().then(function(title) {
             //Login User
@@ -114,9 +115,11 @@ app.post('/sendMessage', function(request, response) {
         //future send error to org
         response.status(500).send(error);
     });
-
+*/
+    response.status(201).send(driver.getTitle());
     //Close the test
     driver.quit();
+
 
 });
 
