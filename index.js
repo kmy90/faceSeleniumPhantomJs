@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 14000;
 var By = webdriver.By;
 var until = webdriver.until;
 
@@ -19,7 +19,7 @@ app.post('/sendMessage', function(req, res) {
     var message = req.body.message;
 
     var driver = new webdriver.Builder()
-        .forBrowser('/vendor/phantomjs/bin/phantomjs')
+        .forBrowser('phantomjs')
         .build();
     driver.get('https://facebook.com/login/');
     driver.wait(function() {
