@@ -72,7 +72,7 @@ app.get('/', function(request, response) {
     response.send('Hello World!')
 })
 app.get('/test', function(request, response) {
-    res.status(200).send('test');
+    response.status(200).send('test');
 })
 
 
