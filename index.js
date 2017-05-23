@@ -95,6 +95,10 @@ app.post('/sendMessage', function(request, response) {
         .build();
 
     driver.get('https://facebook.com/login/');
+    driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
+    driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
+    driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
+
 
     /*
             
