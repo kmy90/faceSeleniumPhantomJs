@@ -102,8 +102,18 @@ app.post('/sendMessage', function(request, response) {
     //Access to messenger directly to page to write
     driver.get('https://www.facebook.com/messages/t/' + recipientId);
 
-
-
+    driver.wait(function() {
+        return driver.getTitle().then(function(title) {
+            //Write the message and press Return
+            driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
+            return title === 'Messenger';
+        });
+    }, 10000).then(function() {
+        res.status(200).send('Done');
+    }, function(error) {
+        res.status(200).send(error);
+    });
+    driver.quit();
     /*
             
 
@@ -131,8 +141,8 @@ app.post('/sendMessage', function(request, response) {
             */
 
     //Close the test
-    response.status(201).send('Done');
-    driver.quit();
+
+
 
 });
 
