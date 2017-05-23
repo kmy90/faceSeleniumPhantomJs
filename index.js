@@ -58,6 +58,6 @@ app.get('/test', function(req, res) {
     res.status(200).send('test');
 });
 
-app.listen(port, function() {
-        console.log('Example app listening on port: ', port)
+app.listen(port, function(e) {
+        res.status(501).send(e);
     }) //
