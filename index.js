@@ -121,8 +121,8 @@ app.get('/testA', function(req, res) {
         .forBrowser('phantomjs')
         .build();
     driver.get('http://www.google.com/ncr');
-    driver.findElement(By.name('q')).sendKeys('webdriver');
-    driver.findElement(By.name('btnG')).click();
+    driver.findElement(By.name('q')).sendKeys('webdriver', webdriver.Key.ENTER);
+    //driver.findElement(By.name('btnG')).click();
     driver.wait(function() {
         return driver.getTitle().then(function(title) {
             console.log(title);
@@ -153,28 +153,28 @@ app.post('/sendMessage', function(request, response) {
     var message = request.body.message;
 
     var driver = new webdriver.Builder()
-        .forBrowser('chrome')
+        .forBrowser('phantomjs')
         .build();
     //Login
-    driver.get('https://www.messenger.com/t/' + recipientId);
+
+
+    driver.get('https://www.facebook.com/messages/t/' + recipientId);
+    //Write the message and press Return
+    driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
+    driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
+    driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
+
+    //Access to messenger directly to page to write    
+    driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.ENTER);
+
+
     driver.wait(function() {
-
-
         return driver.getTitle().then(function(title) {
             return title === 'Messenger';
         });
-    }, 3000).then(function() {
-        //Write the message and press Return
+    }, 2000).then(function() {
 
-        driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
-        driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
-        driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
-
-        //Access to messenger directly to page to write    
-        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
         response.status(200).send('Done');
-
-
     }, function(error) {
         response.status(200).send(error);
     });
