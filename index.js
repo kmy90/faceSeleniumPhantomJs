@@ -62,12 +62,22 @@ var webdriver = require('selenium-webdriver')
 var express = require('express')
 var app = express()
 
+var By = webdriver.By;
+
+
 app.set('port', (process.env.PORT || 5000))
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(request, response) {
     response.send('Hello World!')
 })
+app.get('/test', function(request, response) {
+    res.status(200).send('test');
+})
+
+
+
+
 
 app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
