@@ -105,7 +105,7 @@ app.post('/sendMessage', function(request, response) {
 
             //Access to messenger directly to page to write
             driver.get('https://www.facebook.com/messages/t/' + recipientId);
-
+            return true;
         });
     }, 10000).then(function() {
         response.status(201).send('Done');
