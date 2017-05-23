@@ -93,11 +93,15 @@ app.post('/sendMessage', function(request, response) {
     var driver = new webdriver.Builder()
         .forBrowser('phantomjs')
         .build();
-
+    //Login
     driver.get('https://facebook.com/login/');
     driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
     driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
     driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
+
+    //Access to messenger directly to page to write
+    driver.get('https://www.facebook.com/messages/t/' + recipientId);
+
 
 
     /*
@@ -110,8 +114,8 @@ app.post('/sendMessage', function(request, response) {
                     driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
                     driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
 
-                    //Access to messenger directly to page to write
-                    driver.get('https://www.facebook.com/messages/t/' + recipientId);
+                    
+                   
                     return true;
                 });
             }, 10000).then(function() {
@@ -125,8 +129,9 @@ app.post('/sendMessage', function(request, response) {
             });
 
             */
-    response.status(201).send('Done');
+
     //Close the test
+    response.status(201).send('Done');
     driver.quit();
 
 });
