@@ -80,66 +80,41 @@ app.get('/', function(request, response) {
 })
 
 app.get('/test', function(request, response) {
-    response.status(200).send('test');
-})
-
-app.post('/sendMessage', function(request, response) {
-    //Get Credentials
-    var username = request.body.username;
-    var password = request.body.password;
-    var recipientId = request.body.recipientId;
-    var message = request.body.message;
-
-    var driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
-        .build();
-    //Login
-    driver.get('https://facebook.com/login/');
-    driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
-    driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
-    driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
-
-    //Access to messenger directly to page to write
-    driver.get('https://www.facebook.com/messages/t/' + recipientId);
-    //Write the message and press Return
-    driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
-
-
-
-
-
-
+        response.status(200).send('test');
+    })
     /*
-            
+    app.post('/sendMessage', function(request, response) {
+        //Get Credentials
+        var username = request.body.username;
+        var password = request.body.password;
+        var recipientId = request.body.recipientId;
+        var message = request.body.message;
 
-            driver.wait(function() {
-                return driver.getTitle().then(function(title) {
-                    //Login User
-                    driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
-                    driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
-                    driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
+        var driver = new webdriver.Builder()
+            .forBrowser('chrome')
+            .build();
+        //Login
+        driver.get('https://facebook.com/login/');
+        driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
+        driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
+        driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
 
-                    
-                   
-                    return true;
-                });
-            }, 10000).then(function() {
-                response.status(201).send('Done');
-                //Write the message and press Return
-                // driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
-                // response.status(201).send('Done');
-            }, function(error) {
-                //future send error to org
-                response.status(500).send(error);
+        //Access to messenger directly to page to write
+        driver.get('https://www.facebook.com/messages/t/' + recipientId);
+        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
+
+        driver.wait(function() {
+            //Write the message and press Return
+            return driver.getTitle().then(function(title) {
+                return title === 'Messenger';
             });
-
-            */
-
-    //Close the test
-    response.status(201).send('Done');
-    driver.quit();
-
-});
+        }, 5000).then(function() {
+            response.status(200).send('Done');
+        }, function(error) {
+            response.status(200).send(error);
+        });
+        driver.quit();
+    });*/
 
 app.get('/testA', function(req, res) {
     var driver = new webdriver.Builder()
@@ -161,7 +136,51 @@ app.get('/testA', function(req, res) {
     driver.quit();
 });
 
+app.post('/phantomJS', function(request, response) {
+
+
+});
 
 app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
 })
+
+app.post('/sendMessage', function(request, response) {
+    //Get Credentials
+    var username = request.body.username;
+    var password = request.body.password;
+    var recipientId = request.body.recipientId;
+    var message = request.body.message;
+
+    var driver = new webdriver.Builder()
+        .forBrowser('phantomjs')
+        .build();
+    //Login
+    driver.get('https://www.messenger.com/t/' + recipientId);
+    driver.wait(function() {
+
+
+        return driver.getTitle().then(function(title) {
+            return title === 'Messenger';
+        });
+    }, 3000).then(function() {
+        //Write the message and press Return
+
+        driver.findElement(By.xpath("//input[@id='email']")).sendKeys(username);
+        driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
+        driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
+
+        //Access to messenger directly to page to write    
+        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message);
+        console.log(driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).getText());
+        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.RETURN);
+
+
+        response.status(200).send('Done');
+
+
+    }, function(error) {
+        response.status(200).send(error);
+    });
+    driver.quit();
+});
