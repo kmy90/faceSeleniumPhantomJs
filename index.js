@@ -19,7 +19,7 @@ app.get('/', function(request, response) {
 
 app.get('/testA', function(req, res) {
     var driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
+        .forBrowser('chrome')
         .build();
     driver.get('http://www.google.com/ncr');
     driver.findElement(By.name('q')).sendKeys('webdriver', webdriver.Key.ENTER);
@@ -71,25 +71,23 @@ app.post('/sendMessage', function(request, response) {
         driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(password);
         driver.findElement(By.xpath("//*[@id='loginbutton']")).click();
 
-        //Access to messenger directly to page to write    
-        driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.ENTER);
-
-        //Close Account
-        driver.findElement(By.xpath("//*[@id='userNavigationLabel']")).click();
-        var logoutKey = '"{"ref":"async_menu","logout_menu_click":"menu_logout"}';
-        driver.findElement(By.xpath("//a[@data-gt='" + logoutKey + "']")).click();
 
         driver.wait(function() {
             return driver.getTitle().then(function(title) {
                 return title === 'Messenger';
             });
-        }, 2000).then(function() {
-
+        }, 5000).then(function() {
+            //Access to messenger directly to page to write    
+            driver.findElement(By.xpath("//*[@contenteditable='true' and @role='combobox']")).sendKeys(message, webdriver.Key.ENTER);
             response.status(200).send('Done');
+            driver.close();
+            driver.quit();
         }, function(error) {
-            response.status(200).send(error);
+            //res.status(200).send(error);
+            response.status(401).send('Invalid Credentials');
+            driver.close();
+            driver.quit();
         });
-        driver.quit();
     } catch (e) {
         response.status(500).send(JSON.stringify(e));
     }
