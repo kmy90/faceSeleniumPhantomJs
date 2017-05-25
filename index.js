@@ -3,8 +3,8 @@ var webdriver = require('selenium-webdriver')
 var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
-var direverBuider = new webdriver.Builder().forBrowser('phantomjs');
-//var direverBuider = new webdriver.Builder().forBrowser('chrome');
+var driver = new webdriver.Builder().forBrowser('phantomjs');
+//var driver = new webdriver.Builder().forBrowser('chrome');
 app.use(bodyParser.json()) // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
@@ -26,7 +26,7 @@ app.post('/sendMessage', (request, response) => {
         var password = request.body.password;
         var recipientId = request.body.recipientId;
         var message = request.body.message;
-        var driver = direverBuider.build();
+        var driver = driver.build();
         let error = (e) => {
                 if (!responseSent) {
                     console.error('Error', e);
