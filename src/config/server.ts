@@ -2,7 +2,12 @@ import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as passport from 'passport';
+import AuthenticateService from '../auth/authenticateService';
 import FacebookMessageRouter from '../router/facebookMessageRouter';
+import TestRouter from '../router/testRouter';
+import OauthRouter from '../router/oauthRouter';
+
 
 // Creates and configures an ExpressJS web server.
 class Server {
@@ -14,6 +19,7 @@ class Server {
   constructor() {
     this.express = express();
     this.middleware();
+    AuthenticateService.init();
     this.routes();
   }
   // Configure Express middleware.
@@ -30,6 +36,8 @@ class Server {
      * API endpoints */
     let router = express.Router();
     this.express.use('/facebookMessage', FacebookMessageRouter);
+    this.express.use('/oauth', OauthRouter);
+    this.express.use('/test', passport.authenticate('bearer', { session: false }), TestRouter);
   }
 }
 export default new Server().express;
