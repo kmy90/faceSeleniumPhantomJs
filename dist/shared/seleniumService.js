@@ -13,44 +13,62 @@ class SeleniumService {
                 .catch(reject);
         });
     }
-    setInputAction(input) {
-        let searcherParameter = (input.searcherParameter != '') ? input.searcherParameter : '*';
-        let stringQuery = '//' + searcherParameter + '[';
-        let counter = 0;
-        for (let attr of input.htmlAttributes) {
-            counter += 1;
-            stringQuery += "@" + attr.name + "='" + attr.value + "'";
-            if (counter != input.htmlAttributes.length)
-                stringQuery += ' and ';
+    setStep(step) {
+        let { driver } = this;
+        // pointers to step.findElements and step.actions
+        let { findElement, action } = step;
+        //if the action not require findElement action:
+        if (findElement == false) {
+            if (typeof this[action.type + 'Handler'] === 'function')
+                return this[action.type + 'Handler'](action);
+            else
+                return new Promise((resolve, reject) => { reject('The action "' + action.type + '" not is supported'); });
         }
-        stringQuery += ']';
+        else {
+            // building the query to locate the WebElement
+            let stringQuery = '//' + findElement.tag + '[';
+            // pointer to findElements.attribute
+            let { attributes } = findElement;
+            let counter = 0;
+            for (let key in attributes) {
+                counter += 1;
+                stringQuery += "@" + key + "='" + attributes[key] + "'";
+                if (counter != Object.keys(attributes).length)
+                    stringQuery += ' and ';
+            }
+            stringQuery += ']';
+            if (typeof this[action.type + 'Handler'] === 'function')
+                return this[action.type + 'Handler'](stringQuery, action);
+            else
+                return new Promise((resolve, reject) => { reject('The action "' + action.type + '" not is supported'); });
+        }
+    }
+    sendKeysHandler(stringQuery, action) {
+        let { driver } = this;
         return new Promise((resolve, reject) => {
-            let { driver } = this;
-            if (input.requireExtraAction) {
-                if (input.extraAction == 'click') {
-                    driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(resolve).catch(reject);
-                }
-                else {
-                    let keyvalue = input.extraAction;
-                    driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).sendKeys(input.sendValue, selenium_webdriver_1.Key[keyvalue]).then(resolve).catch(reject);
-                }
-            }
-            else {
-                driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).sendKeys(input.sendValue).then(resolve).catch(reject);
-            }
+            if (action.hasOwnProperty("keypress"))
+                driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).sendKeys(action.value, selenium_webdriver_1.Key[action.keypress]).then(resolve).catch(reject);
+            else
+                driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).sendKeys(action.value).then(resolve).catch(reject);
         });
     }
-    waitByExpectedTitle(expectedTitle, time) {
+    clickHandler(stringQuery, action) {
+        let { driver } = this;
+        return new Promise((resolve, reject) => {
+            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(resolve).catch(reject);
+        });
+    }
+    waitHandler(action) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             driver.wait(() => {
-                return driver.getTitle().then((title) => {
-                    return title.includes(expectedTitle);
+                return driver[action.for]().then((argument) => {
+                    return argument.includes(action.includes);
                 });
-            }, time).then(resolve).catch(reject);
+            }, action.timeout).then(resolve).catch(reject);
         });
     }
-    closeDriver() {
+    quitHandler(action) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             driver.quit()

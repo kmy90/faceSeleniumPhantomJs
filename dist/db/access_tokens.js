@@ -6,7 +6,6 @@ class TokenDB {
     constructor() { }
     static removeOldToken(token) {
         return () => {
-            console.log('remove', token);
             tokens[token] = undefined;
             delete tokens[token];
         };

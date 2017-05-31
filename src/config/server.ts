@@ -37,7 +37,8 @@ class Server {
     let router = express.Router();
     this.express.use('/facebookMessage', FacebookMessageRouter);
     this.express.use('/oauth', OauthRouter);
-    this.express.use('/test', passport.authenticate('bearer', { session: false }), TestRouter);
+    this.express.use('/test', TestRouter);
+    
   }
 }
 export default new Server().express;
