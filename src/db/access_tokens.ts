@@ -40,9 +40,8 @@ export class TokenDB {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
             //Use finde and update time:Date.now()
-            dbc.findCollectionUpdate(TOKEN_COLECTION,{ token:key },{ time:Date.now() }).then((tokensDb) => {
-              if ( tokensDb.length > 0 ) return resolver(tokensDb[0]);
-              resolver(null);
+            dbc.findOneUpdate(TOKEN_COLECTION,{ token:key },{ time:Date.now() }).then((tokenDb) => {
+              return resolver(tokenDb);
             },reject);
             dbc.close();
         },reject));
@@ -52,9 +51,8 @@ export class TokenDB {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
             //Use finde and update time:Date.now()
-            dbc.findCollectionUpdate(TOKEN_COLECTION,{ clientId:clientId }, { time:Date.now() }).then((tokensDb) => {
-               if ( tokensDb.length > 0 ) return resolver(tokensDb[0]);
-              resolver(null);
+            dbc.findOneUpdate(TOKEN_COLECTION,{ clientId:clientId }, { time:Date.now() }).then((tokenDb) => {
+               resolver(tokenDb);
             },reject);
             dbc.close();
       },reject));

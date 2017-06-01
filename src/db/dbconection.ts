@@ -47,15 +47,16 @@ export class DBConection {
     });
   }
 
-  public findCollectionUpdate(collection, query, update):Promise<any> {
+  public findOneUpdate(collection, query, update):Promise<any> {
     return new Promise((resolver,reject) => {
       // Find some documents
-      this.db.collection(collection).findOneAndUpdate(query,update).toArray((err, docs) => {
+      this.db.collection(collection).findOneAndUpdate(query, { $set: update }, (err, docs) => {
+        console.log(docs);
         if(err) {
           reject(err);
           return;
         }
-        resolver(docs);
+        resolver(docs.value);
       });
     });
   }

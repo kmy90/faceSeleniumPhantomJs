@@ -18,7 +18,7 @@ class SeleniumService {
         // pointers to step.findElements and step.actions
         let { findElement, action } = step;
         //if the action not require findElement action:
-        if (findElement == false) {
+        if (!findElement) {
             if (typeof this[action.type + 'Handler'] === 'function')
                 return this[action.type + 'Handler'](action);
             else
@@ -46,10 +46,11 @@ class SeleniumService {
     sendKeysHandler(stringQuery, action) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
+            let element = driver.findElement(selenium_webdriver_1.By.xpath(stringQuery));
             if (action.hasOwnProperty("keypress"))
-                driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).sendKeys(action.value, selenium_webdriver_1.Key[action.keypress]).then(resolve).catch(reject);
+                element.sendKeys(action.value, selenium_webdriver_1.Key[action.keypress]).then(resolve).catch(reject);
             else
-                driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).sendKeys(action.value).then(resolve).catch(reject);
+                element.sendKeys(action.value).then(resolve).catch(reject);
         });
     }
     clickHandler(stringQuery, action) {

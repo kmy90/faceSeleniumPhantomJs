@@ -34,10 +34,8 @@ class TokenDB {
     static find(key) {
         return new Promise((resolver, reject) => db_1.DBConection.init().then((dbc) => {
             //Use finde and update time:Date.now()
-            dbc.findCollectionUpdate(TOKEN_COLECTION, { token: key }, { time: Date.now() }).then((tokensDb) => {
-                if (tokensDb.length > 0)
-                    return resolver(tokensDb[0]);
-                resolver(null);
+            dbc.findOneUpdate(TOKEN_COLECTION, { token: key }, { time: Date.now() }).then((tokenDb) => {
+                return resolver(tokenDb);
             }, reject);
             dbc.close();
         }, reject));
@@ -45,10 +43,8 @@ class TokenDB {
     static getTokenByClientId(clientId) {
         return new Promise((resolver, reject) => db_1.DBConection.init().then((dbc) => {
             //Use finde and update time:Date.now()
-            dbc.findCollectionUpdate(TOKEN_COLECTION, { clientId: clientId }, { time: Date.now() }).then((tokensDb) => {
-                if (tokensDb.length > 0)
-                    return resolver(tokensDb[0]);
-                resolver(null);
+            dbc.findOneUpdate(TOKEN_COLECTION, { clientId: clientId }, { time: Date.now() }).then((tokenDb) => {
+                resolver(tokenDb);
             }, reject);
             dbc.close();
         }, reject));
