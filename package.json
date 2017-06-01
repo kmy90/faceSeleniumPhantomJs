@@ -8,6 +8,8 @@
     "debug": "^2.6.8",
     "express": "^4.15.3",
     "morgan": "^1.8.2",
+    "mongodb": "^2.2.27",
+    "passport": "^0.3.2",
     "selenium-webdriver": "^3.4.0"
   },
   "devDependencies": {
