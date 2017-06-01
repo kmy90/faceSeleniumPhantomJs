@@ -1,21 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_db_mock_1 = require("./dbmock/client-db-mock");
+const db_1 = require("../db");
+const CLIENT_COLECTION = 'client';
 class ClienatDB {
     constructor() { }
-    static findById(id, done) {
-        for (let i = 0, len = client_db_mock_1.default.length; i < len; i++) {
-            if (client_db_mock_1.default[i].id === id)
-                return done(null, client_db_mock_1.default[i]);
-        }
-        return done(new Error('Client Not Found'));
+    static findById(id) {
+        return new Promise((resolve, reject) => db_1.DBConection.init().then((dbc) => {
+            dbc.findCollection(CLIENT_COLECTION, { id: id }).then((clientsDb) => {
+                for (let i = 0, len = clientsDb.length; i < len; i++) {
+                    if (clientsDb[i].id === id)
+                        return resolve(clientsDb[i]);
+                }
+                resolve(null);
+            }, reject);
+        }, reject));
     }
-    static findByClientId(clientId, done) {
-        for (let i = 0, len = client_db_mock_1.default.length; i < len; i++) {
-            if (client_db_mock_1.default[i].clientId === clientId)
-                return done(null, client_db_mock_1.default[i]);
-        }
-        return done(new Error('Client Not Found'));
+    static findByClientId(clientId) {
+        return new Promise((resolve, reject) => db_1.DBConection.init().then((dbc) => {
+            dbc.findCollection(CLIENT_COLECTION, { clientId: clientId }).then((clientsDb) => {
+                for (let i = 0, len = clientsDb.length; i < len; i++) {
+                    if (clientsDb[i].clientId === clientId)
+                        return resolve(clientsDb[i]);
+                }
+                resolve(null);
+            }, reject);
+        }, reject));
     }
 }
 exports.ClienatDB = ClienatDB;

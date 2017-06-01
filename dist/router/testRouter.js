@@ -16,8 +16,20 @@ class TestRouter {
         });
         this.router.get('/db', (req, res) => {
             db_1.DBConection.init().then((dbc) => {
-                dbc.insertCollectionOne('a', { a: 'a' });
-                dbc.findCollection('a', {}).then((e) => res.status(200).send(e), (e) => res.status(505).send(e));
+                dbc.findCollection('colection', {}).then((e) => res.status(200).send(e), (e) => res.status(505).send(e));
+                dbc.close();
+            });
+        });
+        this.router.get('/db/:colec', (req, res) => {
+            db_1.DBConection.init().then((dbc) => {
+                dbc.findCollection(req.params.colec, {}).then((e) => res.status(200).send(e), (e) => res.status(505).send(e));
+                dbc.close();
+            });
+        });
+        this.router.get('/db/:colec/drop', (req, res) => {
+            db_1.DBConection.init().then((dbc) => {
+                dbc.removeCollectionMany(req.params.colec, {}).then((e) => res.status(200).send(e), (e) => res.status(505).send(e));
+                dbc.close();
             });
         });
     }

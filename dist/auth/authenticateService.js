@@ -17,15 +17,13 @@ class AuthenticateService {
                     return done(null, false);
                 // The request came from a client only since userId is null,
                 // therefore the client is passed back instead of a user.
-                db_1.ClienatDB.findByClientId(token.clientId, (error, client) => {
-                    if (error)
-                        return done(error);
+                db_1.ClienatDB.findByClientId(token.clientId).then((client) => {
                     if (!client)
                         return done(null, false);
                     // To keep this example simple, restricted scopes are not implemented,
                     // and this is just for illustrative purposes.
                     done(null, client, { scope: '*' });
-                });
+                }, done);
             });
         }));
     }

@@ -12,19 +12,18 @@ export default class AuthenticateService {
 
   public static BearerStrategy():void {
      passport.use(
-      new BearerStrategy((accessToken, done) => {
-       TokenDB.find(accessToken, (error, token) => {
-         if (error) return done(error);
-         if (!token) return done(null, false);
-      // The request came from a client only since userId is null,
-      // therefore the client is passed back instead of a user.
-          ClienatDB.findByClientId(token.clientId, (error, client) => {
-            if (error) return done(error);
+        new BearerStrategy((accessToken, done) => {
+        TokenDB.find(accessToken, (error, token) => {
+          if (error) return done(error);
+          if (!token) return done(null, false);
+          // The request came from a client only since userId is null,
+          // therefore the client is passed back instead of a user.
+          ClienatDB.findByClientId(token.clientId).then( (client) => {
             if (!client) return done(null, false);
             // To keep this example simple, restricted scopes are not implemented,
             // and this is just for illustrative purposes.
             done(null, client, { scope: '*' });
-          });
+          }, done);
         });
       })
     );

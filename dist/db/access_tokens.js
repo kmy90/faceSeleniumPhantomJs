@@ -1,40 +1,72 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const refresTime = (60 * 60 * 1000);
+const utils_1 = require("../utils");
+const db_1 = require("../db");
+const config_db_1 = require("./config_db");
 const tokens = {};
+const TOKEN_COLECTION = 'token';
+var timer_token_refresh = null;
 class TokenDB {
-    constructor() { }
-    static removeOldToken(token) {
-        return () => {
-            tokens[token] = undefined;
-            delete tokens[token];
-        };
+    constructor() {
     }
-    static refreshToken(token) {
-        clearTimeout(token.timer);
-        token.timer = setTimeout(this.removeOldToken(token.token), refresTime);
+    static dorpDB() {
+        db_1.DBConection.init().then((dbc) => {
+            let date_expire = Date.now() - config_db_1.default.token_expire_time;
+            dbc.removeCollectionMany(TOKEN_COLECTION, {}).then(() => { console.log('Drop Token'); }, (e) => { console.error('TokenDB Drop', e); });
+            dbc.close();
+        });
+    }
+    static removeOldToken() {
+        db_1.DBConection.init().then((dbc) => {
+            let date_expire = Date.now() - config_db_1.default.token_expire_time;
+            dbc.removeCollectionMany(TOKEN_COLECTION, { $or: [{ time: { $lte: date_expire } },
+                    { time: undefined }] }).then(() => { }, (e) => { console.error('TokenDB Remove', e); });
+            dbc.close();
+        });
+    }
+    static refreshTokensDb() {
+        if (config_db_1.default.token_refresh_time > 0 && config_db_1.default.token_expire_time) {
+            if (timer_token_refresh)
+                TokenDB.removeOldToken();
+            timer_token_refresh = setTimeout(TokenDB.refreshTokensDb, config_db_1.default.token_refresh_time);
+        }
     }
     static find(key, done) {
-        if (tokens[key]) {
-            this.refreshToken(tokens[key]);
-            return done(null, tokens[key]);
-        }
-        ;
-        return done(new Error('Token Not Found'));
+        db_1.DBConection.init().then((dbc) => {
+            dbc.findCollection(TOKEN_COLECTION, { token: key }).then((tokensDb) => {
+                console.log(tokensDb);
+                for (let i = 0, len = tokensDb.length; i < len; i++) {
+                    if (tokensDb[i].token === key)
+                        return done(null, tokensDb[i]);
+                }
+                done(null, null);
+            }, done);
+            dbc.close();
+        }, done);
     }
     static getTokenByClientId(clientId, done) {
-        for (let token in tokens) {
-            if (tokens[token] && tokens[token].clientId === clientId) {
-                this.refreshToken(tokens[token]);
-                return done(null, token);
-            }
-        }
-        return done(new Error('Token Not Found'));
+        db_1.DBConection.init().then((dbc) => {
+            dbc.findCollection(TOKEN_COLECTION, { clientId: clientId }).then((tokensDb) => {
+                for (let i = 0, len = tokensDb.length; i < len; i++) {
+                    //this.refreshTokensDb(tokens[key]); 
+                    if (tokensDb[i].clientId === clientId)
+                        return done(null, tokensDb[i]);
+                }
+                done(null, null);
+            }, done);
+            dbc.close();
+        }, done);
     }
-    static save(token, clientId, done) {
-        let timer = setTimeout(this.removeOldToken(token), refresTime);
-        tokens[token] = { token, clientId, timer };
-        done();
+    static createToken(clientId, done) {
+        db_1.DBConection.init().then((dbc) => {
+            const token = utils_1.Utils.getUid(config_db_1.default.token_size);
+            dbc.insertCollectionOne(TOKEN_COLECTION, { token, clientId, time: Date.now() }).then((rest) => {
+                console.log(rest.ops[0]);
+                done(null, rest.ops[0]);
+            }, done);
+            dbc.close();
+        }, done);
     }
 }
 exports.TokenDB = TokenDB;
+TokenDB.refreshTokensDb();

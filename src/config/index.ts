@@ -1,6 +1,5 @@
 import * as http from 'http';
 import * as debug from 'debug';
-
 import Server from './server';
 
 debug('ts-express:server');

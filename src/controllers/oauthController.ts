@@ -28,10 +28,10 @@ export class OauthController {
 
 		server.serializeClient((client, done) => done(null, client.id));
 		server.deserializeClient((id, done) => {
-		  ClienatDB.findById(id, (error, client) => {
-		    if (error) return done(error);
-		    return done(null, client);
-		  });
+		  ClienatDB.findById(id).then(
+        (client) => { return done(null, client); },
+        (error) => { return done(error); }
+        );
 		});
 
 
@@ -42,8 +42,7 @@ export class OauthController {
 		// values.
 
 		server.grant(oauth2orize.grant.token((client:any, user:any, ares:any, done:any) => {
-		  const token = Utils.getUid(256);
-		  TokenDB.save(token, client.clientId, (error) => {
+		  TokenDB.createToken(client.clientId, (error,token) => {
 		    if (error) return done(error);
 		    return done(null, token);
 		  });
@@ -56,39 +55,41 @@ export class OauthController {
 
 		server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => {
 		  // Validate the client
-		  ClienatDB.findByClientId(client.clientId, (error, localClient) => {
-		    if (error) return done(error);
-		    if (!localClient) return done(null, false);
-		    if (localClient.clientSecret !== client.clientSecret) return done(null, false);
-		    // Everything validated, return the token
-		    const token = Utils.getUid(256);
-		    // Pass in a null for user id since there is no user with this grant type
-		    TokenDB.save(token, client.clientId, (error) => {
-		      if (error) return done(error);
-		      return done(null, token);
-		    });
-		  });
+		  ClienatDB.findByClientId(client.clientId).then(
+        (localClient) => {
+  		    if (!localClient) return done(null, false);
+  		    if (localClient.clientSecret !== client.clientSecret) return done(null, false);
+  		    // Everything validated, return the token
+  		    // Pass in a null for user id since there is no user with this grant type
+  		    TokenDB.createToken(client.clientId, (error, token) => {
+  		      if (error) return done(error);
+  		      return done(null, token);
+  		    });
+		    },
+      
+        (e) => { return done(e); } 
+      );
 		}));
 	}
 
   private static create_token(clientId, clientSecert) {
     return (requests, response) => {
-     ClienatDB.findByClientId(clientId, (error, client) => {
-        if(error) throw error;
-        if(client.clientSecret != clientSecert) throw new Error('Client Not Found');
+     ClienatDB.findByClientId(clientId).then(
+      (client) => {
+        if(client.clientSecret != clientSecert) return response.status(401).send(Error('Client Secert Not Match'));
         TokenDB.getTokenByClientId(clientId, (error, token) => {
-            console.log(token)
+            if (error)  return response.status(505).send(error);
             if(!token) {
-                token = Utils.getUid(16);
-                TokenDB.save(token, clientId, (error) => {
-                    //if (error) return done(error);
-                    response.status(201).send(token);
+                TokenDB.createToken( clientId, (error, token_new) => {
+                    response.status(201).send(token_new);
                 });
             } else {
                 response.status(201).send(token);
             }
         });
-    });
+      },
+      (error) => { return response.status(505).send(error); }
+    );
    }
   }
 

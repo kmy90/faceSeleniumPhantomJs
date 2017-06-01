@@ -3,10 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
+const passport = require("passport");
 const authenticateService_1 = require("../auth/authenticateService");
 const facebookMessageRouter_1 = require("../router/facebookMessageRouter");
 const testRouter_1 = require("../router/testRouter");
 const oauthRouter_1 = require("../router/oauthRouter");
+const dbRouter_1 = require("../router/dbRouter");
 // Creates and configures an ExpressJS web server.
 class Server {
     //Run configuration methods on the Express instance.
@@ -30,7 +32,8 @@ class Server {
         let router = express.Router();
         this.express.use('/facebookMessage', facebookMessageRouter_1.default);
         this.express.use('/oauth', oauthRouter_1.default);
-        this.express.use('/test', testRouter_1.default);
+        this.express.use('/db', dbRouter_1.default);
+        this.express.use('/test', passport.authenticate('bearer', { session: false }), testRouter_1.default);
     }
 }
 exports.default = new Server().express;

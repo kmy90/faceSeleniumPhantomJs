@@ -7,7 +7,7 @@ import AuthenticateService from '../auth/authenticateService';
 import FacebookMessageRouter from '../router/facebookMessageRouter';
 import TestRouter from '../router/testRouter';
 import OauthRouter from '../router/oauthRouter';
-
+import DBRouter from '../router/dbRouter';
 
 // Creates and configures an ExpressJS web server.
 class Server {
@@ -37,7 +37,8 @@ class Server {
     let router = express.Router();
     this.express.use('/facebookMessage', FacebookMessageRouter);
     this.express.use('/oauth', OauthRouter);
-    this.express.use('/test', TestRouter);
+    this.express.use('/db', DBRouter);
+    this.express.use('/test',passport.authenticate('bearer', { session: false }), TestRouter);
     
   }
 }
