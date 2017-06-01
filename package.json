@@ -26,8 +26,7 @@
         "ts-loader": "^2.1.0"
     },
     "scripts": {
-        "start": "node dist/index.js",
-        "postinstall": "webpack -p --config webpack.config.js --progress"
+        "start": "node dist/index.js"
     },
     "author": "",
     "license": "ISC",
