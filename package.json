@@ -27,7 +27,7 @@
     },
     "scripts": {
         "start": "node dist/index.js",
-        "postinstall": "webpack -p --config webpack.config.js --progress"
+        "prestart": "webpack -p --config webpack.config.js --progress"
     },
     "author": "",
     "license": "ISC",
