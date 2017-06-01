@@ -45,7 +45,19 @@ export class DBConection {
         resolver(docs);
       });
     });
-  
+  }
+
+  public findCollectionUpdate(collection, query, update):Promise<any> {
+    return new Promise((resolver,reject) => {
+      // Find some documents
+      this.db.collection(collection).findOneAndUpdate(query,update).toArray((err, docs) => {
+        if(err) {
+          reject(err);
+          return;
+        }
+        resolver(docs);
+      });
+    });
   }
 
   public updateCollectionOne(collection, query,update):Promise<any> {

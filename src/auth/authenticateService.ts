@@ -13,8 +13,7 @@ export default class AuthenticateService {
   public static BearerStrategy():void {
      passport.use(
         new BearerStrategy((accessToken, done) => {
-        TokenDB.find(accessToken, (error, token) => {
-          if (error) return done(error);
+        TokenDB.find(accessToken).then((token) => {
           if (!token) return done(null, false);
           // The request came from a client only since userId is null,
           // therefore the client is passed back instead of a user.
@@ -24,7 +23,7 @@ export default class AuthenticateService {
             // and this is just for illustrative purposes.
             done(null, client, { scope: '*' });
           }, done);
-        });
+        },done);
       })
     );
   }

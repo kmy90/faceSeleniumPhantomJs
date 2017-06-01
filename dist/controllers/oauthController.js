@@ -31,11 +31,7 @@ class OauthController {
         // the application. The application issues a token, which is bound to these
         // values.
         server.grant(oauth2orize.grant.token((client, user, ares, done) => {
-            db_1.TokenDB.createToken(client.clientId, (error, token) => {
-                if (error)
-                    return done(error);
-                return done(null, token);
-            });
+            db_1.TokenDB.createToken(client.clientId).then((token) => { return done(null, token); }, (error) => { return done(error); });
         }));
         // Exchange the client id and password/secret for an access token. The callback accepts the
         // `client`, which is exchanging the client's id and password/secret from the
@@ -50,11 +46,7 @@ class OauthController {
                     return done(null, false);
                 // Everything validated, return the token
                 // Pass in a null for user id since there is no user with this grant type
-                db_1.TokenDB.createToken(client.clientId, (error, token) => {
-                    if (error)
-                        return done(error);
-                    return done(null, token);
-                });
+                db_1.TokenDB.createToken(client.clientId).then((token) => { return done(null, token); }, (error) => { return done(error); });
             }, (e) => { return done(e); });
         }));
     }
@@ -63,18 +55,14 @@ class OauthController {
             db_1.ClienatDB.findByClientId(clientId).then((client) => {
                 if (client.clientSecret != clientSecert)
                     return response.status(401).send(Error('Client Secert Not Match'));
-                db_1.TokenDB.getTokenByClientId(clientId, (error, token) => {
-                    if (error)
-                        return response.status(505).send(error);
+                db_1.TokenDB.getTokenByClientId(clientId).then((token) => {
                     if (!token) {
-                        db_1.TokenDB.createToken(clientId, (error, token_new) => {
-                            response.status(201).send(token_new);
-                        });
+                        db_1.TokenDB.createToken(clientId).then((token_new) => { response.status(201).send(token_new); }, (error) => { return response.status(505).send(error); });
                     }
                     else {
                         response.status(201).send(token);
                     }
-                });
+                }, (error) => { return response.status(505).send(error); });
             }, (error) => { return response.status(505).send(error); });
         };
     }

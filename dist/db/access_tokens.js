@@ -31,41 +31,42 @@ class TokenDB {
             timer_token_refresh = setTimeout(TokenDB.refreshTokensDb, config_db_1.default.token_refresh_time);
         }
     }
-    static find(key, done) {
-        db_1.DBConection.init().then((dbc) => {
-            dbc.findCollection(TOKEN_COLECTION, { token: key }).then((tokensDb) => {
-                console.log(tokensDb);
-                for (let i = 0, len = tokensDb.length; i < len; i++) {
-                    if (tokensDb[i].token === key)
-                        return done(null, tokensDb[i]);
-                }
-                done(null, null);
-            }, done);
+    static find(key) {
+        return new Promise((resolver, reject) => db_1.DBConection.init().then((dbc) => {
+            //Use finde and update time:Date.now()
+            dbc.findCollectionUpdate(TOKEN_COLECTION, { token: key }, { time: Date.now() }).then((tokensDb) => {
+                if (tokensDb.length > 0)
+                    return resolver(tokensDb[0]);
+                resolver(null);
+            }, reject);
             dbc.close();
-        }, done);
+        }, reject));
     }
-    static getTokenByClientId(clientId, done) {
-        db_1.DBConection.init().then((dbc) => {
-            dbc.findCollection(TOKEN_COLECTION, { clientId: clientId }).then((tokensDb) => {
-                for (let i = 0, len = tokensDb.length; i < len; i++) {
-                    //this.refreshTokensDb(tokens[key]); 
-                    if (tokensDb[i].clientId === clientId)
-                        return done(null, tokensDb[i]);
-                }
-                done(null, null);
-            }, done);
+    static getTokenByClientId(clientId) {
+        return new Promise((resolver, reject) => db_1.DBConection.init().then((dbc) => {
+            //Use finde and update time:Date.now()
+            dbc.findCollectionUpdate(TOKEN_COLECTION, { clientId: clientId }, { time: Date.now() }).then((tokensDb) => {
+                if (tokensDb.length > 0)
+                    return resolver(tokensDb[0]);
+                resolver(null);
+            }, reject);
             dbc.close();
-        }, done);
+        }, reject));
     }
-    static createToken(clientId, done) {
-        db_1.DBConection.init().then((dbc) => {
+    static removeClientToken(clientId) {
+        return new Promise((resolver, reject) => db_1.DBConection.init().then((dbc) => {
+            dbc.removeCollectionMany(TOKEN_COLECTION, { clientId: clientId }).then(resolver, reject);
+            dbc.close();
+        }, reject));
+    }
+    static createToken(clientId) {
+        return new Promise((resolver, reject) => db_1.DBConection.init().then((dbc) => {
             const token = utils_1.Utils.getUid(config_db_1.default.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, clientId, time: Date.now() }).then((rest) => {
-                console.log(rest.ops[0]);
-                done(null, rest.ops[0]);
-            }, done);
+                resolver(rest.ops[0]);
+            }, reject);
             dbc.close();
-        }, done);
+        }, reject));
     }
 }
 exports.TokenDB = TokenDB;

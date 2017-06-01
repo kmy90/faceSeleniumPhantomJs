@@ -10,9 +10,7 @@ class AuthenticateService {
     }
     static BearerStrategy() {
         passport.use(new BearerStrategy((accessToken, done) => {
-            db_1.TokenDB.find(accessToken, (error, token) => {
-                if (error)
-                    return done(error);
+            db_1.TokenDB.find(accessToken).then((token) => {
                 if (!token)
                     return done(null, false);
                 // The request came from a client only since userId is null,
@@ -24,7 +22,7 @@ class AuthenticateService {
                     // and this is just for illustrative purposes.
                     done(null, client, { scope: '*' });
                 }, done);
-            });
+            }, done);
         }));
     }
 }

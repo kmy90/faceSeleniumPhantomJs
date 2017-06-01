@@ -42,10 +42,10 @@ export class OauthController {
 		// values.
 
 		server.grant(oauth2orize.grant.token((client:any, user:any, ares:any, done:any) => {
-		  TokenDB.createToken(client.clientId, (error,token) => {
-		    if (error) return done(error);
-		    return done(null, token);
-		  });
+		  TokenDB.createToken(client.clientId).then( 
+        (token) => { return done(null, token); },
+        (error) => { return done(error); }
+		  );
 		}));
 
 		// Exchange the client id and password/secret for an access token. The callback accepts the
@@ -61,12 +61,11 @@ export class OauthController {
   		    if (localClient.clientSecret !== client.clientSecret) return done(null, false);
   		    // Everything validated, return the token
   		    // Pass in a null for user id since there is no user with this grant type
-  		    TokenDB.createToken(client.clientId, (error, token) => {
-  		      if (error) return done(error);
-  		      return done(null, token);
-  		    });
+  		    TokenDB.createToken(client.clientId).then( 
+            (token) => { return done(null, token); },
+            (error) => { return done(error); }
+          );
 		    },
-      
         (e) => { return done(e); } 
       );
 		}));
@@ -77,16 +76,18 @@ export class OauthController {
      ClienatDB.findByClientId(clientId).then(
       (client) => {
         if(client.clientSecret != clientSecert) return response.status(401).send(Error('Client Secert Not Match'));
-        TokenDB.getTokenByClientId(clientId, (error, token) => {
-            if (error)  return response.status(505).send(error);
+        TokenDB.getTokenByClientId(clientId).then((token) => {
             if(!token) {
-                TokenDB.createToken( clientId, (error, token_new) => {
-                    response.status(201).send(token_new);
-                });
+                TokenDB.createToken(clientId).then( 
+                  (token_new) => { response.status(201).send(token_new); },
+                  (error) => { return response.status(505).send(error); }
+                );
             } else {
                 response.status(201).send(token);
             }
-        });
+        },
+        (error) => { return response.status(505).send(error); }
+        );
       },
       (error) => { return response.status(505).send(error); }
     );
