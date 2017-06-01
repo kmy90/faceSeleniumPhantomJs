@@ -16,19 +16,19 @@ export class SeleniumService {
                     .catch(reject);
          });
     }
-
+    
     public setStep(step:Step): Promise<SeleniumService> {
-        
         let { driver } = this;
         // pointers to step.findElements and step.actions
         let { findElement, action } = step;
         //if the action not require findElement action:
  
-        if(findElement == false){
+        if(!findElement){
             if(typeof this[action.type+'Handler'] === 'function')
               return this[action.type+'Handler'](action)
             else return new Promise((resolve,reject)=>{ reject('The action "'+ action.type +'" not is supported') });
-        }else{
+     
+       } else {
             // building the query to locate the WebElement
             let stringQuery = '//' + findElement.tag +  '[';
             // pointer to findElements.attribute
@@ -50,11 +50,11 @@ export class SeleniumService {
     private sendKeysHandler(stringQuery:string,action:any): Promise<SeleniumService>{
         let { driver } = this;
         return new Promise((resolve, reject) => {
+            let element = driver.findElement(By.xpath(stringQuery));
             if(action.hasOwnProperty("keypress"))
-                driver.findElement(By.xpath(stringQuery)).sendKeys(action.value, Key[action.keypress]).then(resolve).catch(reject)
+                element.sendKeys(action.value, Key[action.keypress]).then(resolve).catch(reject)
             else
-                driver.findElement(By.xpath(stringQuery)).sendKeys(action.value).then(resolve).catch(reject)
-              
+                element.sendKeys(action.value).then(resolve).catch(reject)
         });
     }   
     private clickHandler(stringQuery:string,action:any): Promise<SeleniumService>{
@@ -83,6 +83,4 @@ export class SeleniumService {
                     .catch(reject);
         });
     }
-
-
 } 
