@@ -11,7 +11,8 @@
     "mongodb": "^2.2.27",
     "passport": "^0.3.2",
     "selenium-webdriver": "^3.4.0",
-    "passport-http-bearer": "1.0.1"
+    "passport-http-bearer": "1.0.1",
+    "oauth2orize": "1.8.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.3",
