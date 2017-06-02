@@ -23,7 +23,6 @@ export class SeleniumService {
         // pointers to step.findElement_x and step.action_x
         let { findElement_x, action_x } = step;
         //if the action_x not require findElement_x action_x:
- 
         if(!findElement_x){
             if(typeof this[action_x.type_x+'Handler'] === 'function')
               return this[action_x.type_x+'Handler'](action_x)
@@ -41,7 +40,6 @@ export class SeleniumService {
                 if(counter != Object.keys(attributes_x).length) stringQuery +=' and ';
             }
             stringQuery+=']';
-
             if(typeof this[action_x.type_x+'Handler'] === 'function')
               return this[action_x.type_x+'Handler'](stringQuery, action_x)
             else return new Promise((resolve,reject)=>{ reject('The action "'+ action_x.type_x +'" is not supported') });
@@ -52,7 +50,7 @@ export class SeleniumService {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             let element = driver.findElement(By.xpath(stringQuery));
-            if(action_x.hasOwnProperty("keypress_x"))
+            if(action_x.keypress_x)
                 element.sendKeys(action_x.value_x, Key[action_x.keypress_x]).then(resolve).catch(reject)
             else
                 element.sendKeys(action_x.value_x).then(resolve).catch(reject)

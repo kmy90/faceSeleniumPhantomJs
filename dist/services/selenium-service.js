@@ -48,7 +48,7 @@ class SeleniumService {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             let element = driver.findElement(selenium_webdriver_1.By.xpath(stringQuery));
-            if (action_x.hasOwnProperty("keypress_x"))
+            if (action_x.keypress_x)
                 element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(resolve).catch(reject);
             else
                 element.sendKeys(action_x.value_x).then(resolve).catch(reject);

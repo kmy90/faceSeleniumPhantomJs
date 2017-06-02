@@ -4,13 +4,13 @@ export interface Step {
 }
 
 export interface Action_x {
-  type_x?:string;
-  for_x?:string;
-  includes_x?:string;
+  type_x?:any;
+  value_x?:any;
   timeout_x?:number;
-  value_x?:string;
+  keypress_x?:any;
+  includes_x?:any;
+  for_x?:any;
 }
-
 
 export interface FindElement_x {
     nodeName_x:string,
