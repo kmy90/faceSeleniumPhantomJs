@@ -14,62 +14,63 @@ class SeleniumService {
         });
     }
     setStep(step) {
+        console.log(step);
         let { driver } = this;
-        // pointers to step.findElements and step.actions
-        let { findElement, action } = step;
-        //if the action not require findElement action:
-        if (!findElement) {
-            if (typeof this[action.type + 'Handler'] === 'function')
-                return this[action.type + 'Handler'](action);
+        // pointers to step.findElement_x and step.action_x
+        let { findElement_x, action_x } = step;
+        //if the action_x not require findElement_x action_x:
+        if (!findElement_x) {
+            if (typeof this[action_x.type_x + 'Handler'] === 'function')
+                return this[action_x.type_x + 'Handler'](action_x);
             else
-                return new Promise((resolve, reject) => { reject('The action "' + action.type + '" not is supported'); });
+                return new Promise((resolve, reject) => { reject('The action "' + action_x.type_x + '" not is supported'); });
         }
         else {
             // building the query to locate the WebElement
-            let stringQuery = '//' + findElement.tag + '[';
-            // pointer to findElements.attribute
-            let { attributes } = findElement;
+            let stringQuery = '//' + findElement_x.nodeName_x + '[';
+            // pointer to findElement_x.attribute
+            let { attributes_x } = findElement_x;
             let counter = 0;
-            for (let key in attributes) {
+            for (let key in attributes_x) {
                 counter += 1;
-                stringQuery += "@" + key + "='" + attributes[key] + "'";
-                if (counter != Object.keys(attributes).length)
+                stringQuery += "@" + key + "='" + attributes_x[key] + "'";
+                if (counter != Object.keys(attributes_x).length)
                     stringQuery += ' and ';
             }
             stringQuery += ']';
-            if (typeof this[action.type + 'Handler'] === 'function')
-                return this[action.type + 'Handler'](stringQuery, action);
+            if (typeof this[action_x.type_x + 'Handler'] === 'function')
+                return this[action_x.type_x + 'Handler'](stringQuery, action_x);
             else
-                return new Promise((resolve, reject) => { reject('The action "' + action.type + '" not is supported'); });
+                return new Promise((resolve, reject) => { reject('The action "' + action_x.type_x + '" is not supported'); });
         }
     }
-    sendKeysHandler(stringQuery, action) {
+    sendKeysHandler(stringQuery, action_x) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             let element = driver.findElement(selenium_webdriver_1.By.xpath(stringQuery));
-            if (action.hasOwnProperty("keypress"))
-                element.sendKeys(action.value, selenium_webdriver_1.Key[action.keypress]).then(resolve).catch(reject);
+            if (action_x.hasOwnProperty("keypress_x"))
+                element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(resolve).catch(reject);
             else
-                element.sendKeys(action.value).then(resolve).catch(reject);
+                element.sendKeys(action_x.value_x).then(resolve).catch(reject);
         });
     }
-    clickHandler(stringQuery, action) {
+    clickHandler(stringQuery, action_x) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(resolve).catch(reject);
         });
     }
-    waitHandler(action) {
+    waitHandler(action_x) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             driver.wait(() => {
-                return driver[action.for]().then((argument) => {
-                    return argument.includes(action.includes);
+                return driver[action_x.for_x]().then((argument) => {
+                    return argument.includes(action_x.includes_x);
                 });
-            }, action.timeout).then(resolve).catch(reject);
+            }, action_x.timeout).then(resolve).catch(reject);
         });
     }
-    quitHandler(action) {
+    quitHandler(action_x) {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             driver.quit()

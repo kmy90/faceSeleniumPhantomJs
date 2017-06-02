@@ -1,14 +1,10 @@
-export class Token {
+export interface Token {
   token: string;
   userId: string;
   time: number;
   admin: boolean;
 }
 
-export class Token_DATABASE {
-  token: string;
-  userId: string;
-  time: number;
-  admin: boolean;
-  _id: string
+export interface Token_DATABASE extends Token {
+  _id?: string
 }

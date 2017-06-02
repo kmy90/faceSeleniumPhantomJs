@@ -97,7 +97,7 @@ export class UsersDB {
     public static create_user(user:any):Promise<User> {
       return new Promise((resolver, reject) => 
       DBConection.init().then((dbc) => {
-        let new_user = { 
+        let new_user:User_DATABASE = { 
           password: user.password,
           user_name: user.user_name,
           secret_code: Utils.getUid(ConfigDB.user_secert_code_size)

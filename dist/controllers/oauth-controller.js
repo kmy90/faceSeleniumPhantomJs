@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const oauth2orize = require("oauth2orize");
 const db_1 = require("../db");
-const controler_config_1 = require("../config/controler-config");
+const controller_config_1 = require("../config/controller-config");
 const RE_USE = 'RE-USE';
 const MULT_TOKEN = 'MULTI-TOKE';
 const ONLY_LAST = 'ONLY-LAST';
@@ -90,8 +90,8 @@ class OauthController {
     //Exist only on token active per user
     static obtain_admin_token_ru(admin_name, admin_pass) {
         return new Promise((resolve, reject) => {
-            if (admin_name != controler_config_1.default.oauth_admin_name ||
-                admin_pass != controler_config_1.default.oauth_admin_pass)
+            if (admin_name != controller_config_1.default.oauth_admin_name ||
+                admin_pass != controller_config_1.default.oauth_admin_pass)
                 return resolve(null);
             db_1.TokensDB.getTokenAdmin().then((token) => {
                 if (!token) {
@@ -106,8 +106,8 @@ class OauthController {
     //Have Multiple valid token per user
     static obtain_admin_token_mt(admin_name, admin_pass) {
         return new Promise((resolve, reject) => {
-            if (admin_name != controler_config_1.default.oauth_admin_name ||
-                admin_pass != controler_config_1.default.oauth_admin_pass)
+            if (admin_name != controller_config_1.default.oauth_admin_name ||
+                admin_pass != controller_config_1.default.oauth_admin_pass)
                 return resolve(null);
             db_1.TokensDB.createAdminToken().then(resolve, reject);
         });
@@ -115,29 +115,29 @@ class OauthController {
     //Ony last token are active
     static obtain_admin_token_ol(admin_name, admin_pass) {
         return new Promise((resolve, reject) => {
-            if (admin_name != controler_config_1.default.oauth_admin_name ||
-                admin_pass != controler_config_1.default.oauth_admin_pass)
+            if (admin_name != controller_config_1.default.oauth_admin_name ||
+                admin_pass != controller_config_1.default.oauth_admin_pass)
                 return resolve(null);
             db_1.TokensDB.removeAdminToken().then(() => { db_1.TokensDB.createAdminToken().then(resolve, reject); }, reject);
         });
     }
     static obtain_user_token(userName, secret_code) {
-        if (controler_config_1.default.oauth_token_crate == RE_USE)
+        if (controller_config_1.default.oauth_token_crate == RE_USE)
             return OauthController.obtain_user_token_ru(userName, secret_code);
-        if (controler_config_1.default.oauth_token_crate == MULT_TOKEN)
+        if (controller_config_1.default.oauth_token_crate == MULT_TOKEN)
             return OauthController.obtain_user_token_mt(userName, secret_code);
-        if (controler_config_1.default.oauth_token_crate == ONLY_LAST)
+        if (controller_config_1.default.oauth_token_crate == ONLY_LAST)
             return OauthController.obtain_user_token_ol(userName, secret_code);
         return new Promise((resolve, reject) => {
             reject(new Error('Not Validate Politic'));
         });
     }
     static obtain_admin_token(admin_name, admin_pass) {
-        if (controler_config_1.default.oauth_token_crate == RE_USE)
+        if (controller_config_1.default.oauth_token_crate == RE_USE)
             return OauthController.obtain_admin_token_ru(admin_name, admin_pass);
-        if (controler_config_1.default.oauth_token_crate == MULT_TOKEN)
+        if (controller_config_1.default.oauth_token_crate == MULT_TOKEN)
             return OauthController.obtain_admin_token_mt(admin_name, admin_pass);
-        if (controler_config_1.default.oauth_token_crate == ONLY_LAST)
+        if (controller_config_1.default.oauth_token_crate == ONLY_LAST)
             return OauthController.obtain_admin_token_ol(admin_name, admin_pass);
         return new Promise((resolve, reject) => {
             reject(new Error('Not Validate Politic'));

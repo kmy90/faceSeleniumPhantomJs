@@ -2,7 +2,7 @@ import * as oauth2orize from 'oauth2orize';
 import passport from 'passport';
 import { TokensDB, UsersDB } from '../db';
 import { Utils } from '../utils';
-import ConfigController from '../config/controler-config';
+import ConfigController from '../config/controller-config';
 
 const RE_USE = 'RE-USE';
 const MULT_TOKEN = 'MULTI-TOKE';
