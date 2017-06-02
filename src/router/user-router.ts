@@ -12,7 +12,7 @@ export class UserRouter {
     }
 
     init(){
-        this.router.get('/',this.controller.obtain_user_info);
+        this.router.get('/', this.controller.obtain_user_info);
     }
 
     public static getRouter() {

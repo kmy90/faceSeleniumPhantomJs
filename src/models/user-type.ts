@@ -1,6 +1,6 @@
 export interface UserInfo {
-  secret_code: string;
-  user_name: string;
+  secret_code?: string;
+  user_name?: string;
 }
 
 export interface User extends UserInfo {
@@ -9,5 +9,5 @@ export interface User extends UserInfo {
 
 export interface User_DATABASE extends UserInfo {
   _id?:string;
-  password: string;
+  password?: string;
 }

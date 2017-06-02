@@ -13,6 +13,12 @@ class Utils {
     static getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+    static encriptPass(pass) {
+        return pass;
+    }
+    static validatePass(pass, encr_pass) {
+        return pass === encr_pass;
+    }
 }
 exports.Utils = Utils;
 exports.default = Utils;

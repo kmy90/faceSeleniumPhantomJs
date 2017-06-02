@@ -5,6 +5,7 @@ const debug = require("debug");
 const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
+const passport = require("passport");
 const router_1 = require("../router");
 const authenticate_service_1 = require("../services/authenticate-service");
 // Creates and configures an ExpressJS web server.
@@ -30,6 +31,8 @@ class Server {
         this.express.use(logger('dev'));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(passport.initialize());
+        this.express.use(passport.session());
     }
     // Configure API endpoints.
     routes() {

@@ -1,5 +1,7 @@
 import { Router } from 'express'
 import { OauthController } from '../controllers/oauth-controller'
+import * as passport from 'passport';
+
 
 export class OauthRouter {
     router: Router;
@@ -12,10 +14,10 @@ export class OauthRouter {
     }
 
     init(){
-        this.router.post('/token',this.controller.post_obtain_user_token);
-        this.router.get('/token',this.controller.get_obtain_user_token);
+        this.router.post('/token', this.controller.post_obtain_user_token);
         this.router.post('/token/admin',this.controller.post_obtain_admin_token);
-        this.router.get('/token/admin',this.controller.get_obtain_admin_token);
+        this.router.get('/token/admin', passport.authenticate('basic-admin',{ session: false })
+            , this.controller.get_obtain_admin_token);
     }
 
     public static getRouter():Router {

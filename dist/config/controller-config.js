@@ -2,9 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class ControllerConfig {
 }
-ControllerConfig.oauth_token_crate = (process.env.OAUTH_TOKEN_CREATE || 'RE-USE');
-ControllerConfig.oauth_admin_name = (process.env.OAUTH_ADMIN_NAME || 'admin');
-ControllerConfig.oauth_admin_pass = (process.env.OAUTH_ADMIN_PASS || 'pass');
-ControllerConfig.selenium_selected_browser = (process.env.SELENIUM_SELECTED_BROWSER || 'phantomjs');
+ControllerConfig.oauth_token_crate = (process.env.C_OAUTH_TOKEN_CREATE || 'RE-USE');
+ControllerConfig.user_secert_code_size = (process.env.C_USER_SECRET_CODE_SIZE) || (24);
+ControllerConfig.oauth_token_size = (process.env.C_OAUTH_TOKEN_SIZE) || (16);
 exports.ControllerConfig = ControllerConfig;
 exports.default = ControllerConfig;

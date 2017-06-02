@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../utils");
 const database_conection_1 = require("./database-conection");
 const database_config_1 = require("../config/database-config");
 const tokens = {};
@@ -69,18 +68,16 @@ class TokensDB {
             dbc.close();
         }, reject));
     }
-    static createAdminToken() {
+    static createAdminToken(token) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            const token = utils_1.Utils.getUid(database_config_1.default.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, admin: true, time: Date.now() }).then((rest) => {
                 resolver(rest.ops[0]);
             }, reject);
             dbc.close();
         }, reject));
     }
-    static createUserToken(userId) {
+    static createUserToken(userId, token) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            const token = utils_1.Utils.getUid(database_config_1.default.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, userId, time: Date.now() }).then((rest) => {
                 resolver(rest.ops[0]);
             }, reject);

@@ -15,5 +15,13 @@ export class Utils {
     private static  getRandomInt(min, max):number {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+    public static encriptPass(pass:string):string {
+      return pass;
+    }
+
+    public static validatePass(pass:string, encr_pass:string):boolean {
+      return pass === encr_pass;
+    }
 }
 export default Utils;

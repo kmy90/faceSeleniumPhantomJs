@@ -90,10 +90,9 @@ export class TokensDB {
         },reject));
     }
 
-    public static createAdminToken():Promise<Token> {
+    public static createAdminToken(token):Promise<Token> {
         return new Promise((resolver, reject)=>
         DBConection.init().then((dbc) =>{
-            const token = Utils.getUid(ConfigDB.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, admin:true, time:Date.now() }).then(
                 (rest) => {
                     resolver(rest.ops[0]);
@@ -102,10 +101,9 @@ export class TokensDB {
         },reject));
     }
 
-    public static createUserToken(userId):Promise<Token> {
+    public static createUserToken(userId, token):Promise<Token> {
         return new Promise((resolver, reject)=>
         DBConection.init().then((dbc) =>{
-            const token = Utils.getUid(ConfigDB.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, userId, time:Date.now() }).then(
                 (rest) => {
                     resolver(rest.ops[0]);

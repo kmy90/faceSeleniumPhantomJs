@@ -1,11 +1,13 @@
 import { Builder, By, until, Key, ThenableWebDriver} from 'selenium-webdriver'
 import { Step } from '../models';
+import Config from '../config/service-config';
+
 
 export class SeleniumService {
     driver : any;
 
-    constructor( browser:string ) {
-        this.driver = new Builder().forBrowser(browser).build();
+    constructor( ) {
+        this.driver = new Builder().forBrowser(Config.selenium_selected_browser).build();
     }
 
     public getUrl(url:string): Promise<SeleniumService> {

@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const selenium_service_1 = require("../services/selenium-service");
-const controller_config_1 = require("../config/controller-config");
 class FacebookMessageController {
     constructor() { }
     sendAutomatedMessage(request, response) {
-        let selService = new selenium_service_1.default(controller_config_1.default.selenium_selected_browser);
+        let selService = new selenium_service_1.default();
         //get Url
         selService.getUrl(request.body.endpoint_x).then(() => {
             let steps = request.body.steps_x;
