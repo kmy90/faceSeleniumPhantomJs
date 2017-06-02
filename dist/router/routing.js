@@ -9,7 +9,7 @@ const user_router_1 = require("./user-router");
 const passport = require("passport");
 class RutingServer {
     static addRutes(express_server) {
-        express_server.use('/facebookMessage', passport.authenticate('bearer', { session: false }), facebook_message_router_1.default.getRouter());
+        express_server.use('/facebookMessage', /*passport.authenticate('bearer', { session: false }), */ facebook_message_router_1.default.getRouter());
         express_server.use('/oauth', oauth_router_1.default.getRouter());
         express_server.use('/db', passport.authenticate('bearer-admin', { session: false }), database_router_1.default.getRouter());
         express_server.use('/test', passport.authenticate('bearer', { session: false }), test_router_1.default.getRuter());
