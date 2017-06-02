@@ -9,6 +9,7 @@ const facebookMessageRouter_1 = require("../router/facebookMessageRouter");
 const test_router_1 = require("../router/test-router");
 const oauth_router_1 = require("../router/oauth-router");
 const db_router_1 = require("../router/db-router");
+const users_router_1 = require("../router/users-router");
 const user_router_1 = require("../router/user-router");
 // Creates and configures an ExpressJS web server.
 class Server {
@@ -35,7 +36,8 @@ class Server {
         this.express.use('/oauth', oauth_router_1.default);
         this.express.use('/db', passport.authenticate('bearer-admin', { session: false }), db_router_1.default);
         this.express.use('/test', passport.authenticate('bearer', { session: false }), test_router_1.default);
-        this.express.use('/users', user_router_1.default);
+        this.express.use('/users', passport.authenticate('bearer-admin', { session: false }), users_router_1.default);
+        this.express.use('/user', passport.authenticate('bearer', { session: false }), user_router_1.default);
     }
 }
 exports.default = new Server().express;

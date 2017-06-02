@@ -25,7 +25,7 @@ export class UsersDB {
     public static findById(id):Promise<User> {
       return new Promise((resolve, reject) =>
       DBConection.init().then((dbc) => {
-        dbc.findCollection(USER_COLECTION,{ id:id }).then((clientsDb) => {
+        dbc.findCollection(USER_COLECTION,{ _id:id }).then((clientsDb) => {
           if(clientsDb.length > 0) 
             return resolve(UsersDB.obfuscate_user_info(clientsDb[0]));
           resolve(null);
@@ -37,7 +37,7 @@ export class UsersDB {
     public static findById_DB(id:string):Promise<User_DATABASE> {
       return new Promise((resolve, reject) =>
       DBConection.init().then((dbc) => {
-        dbc.findCollection(USER_COLECTION,{ id:id }).then((clientsDb) => {
+        dbc.findCollection(USER_COLECTION,{ _id:id }).then((clientsDb) => {
           if(clientsDb.length > 0) 
             return resolve(clientsDb[0]);
           resolve(null);

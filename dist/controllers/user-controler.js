@@ -13,6 +13,7 @@ class UserController {
     change_user_pass(requests, response) {
     }
     obtain_user_info(requests, response) {
+        db_1.UsersDB.findById(requests.user.id).then((user) => { response.status(200).send(requests.user); }, (error) => { response.status(505).send(error); });
     }
 }
 exports.UserController = UserController;

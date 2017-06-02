@@ -7,6 +7,7 @@ import FacebookMessageRouter from '../router/facebookMessageRouter';
 import TestRouter from '../router/test-router';
 import OauthRouter from '../router/oauth-router';
 import DBRouter from '../router/db-router';
+import UsersRouter from '../router/users-router';
 import UserRouter from '../router/user-router';
 
 // Creates and configures an ExpressJS web server.
@@ -39,7 +40,8 @@ class Server {
     this.express.use('/oauth', OauthRouter);
     this.express.use('/db',passport.authenticate('bearer-admin', { session: false }), DBRouter);
     this.express.use('/test',passport.authenticate('bearer', { session: false }), TestRouter);
-    this.express.use('/users',UserRouter);
+    this.express.use('/users',passport.authenticate('bearer-admin', { session: false }),UsersRouter);
+    this.express.use('/user',passport.authenticate('bearer', { session: false }), UserRouter);
   }
 }
 export default new Server().express;

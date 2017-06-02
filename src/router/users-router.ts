@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { UserController } from '../controllers/user-controler'
 
-export class UserRouter {
+export class UsersRouter {
     router: Router;
     controller: UserController;
 
@@ -12,11 +12,11 @@ export class UserRouter {
     }
 
     init(){
-        this.router.get('/',this.controller.obtain_user_info);
+        this.router.post('/',this.controller.create_user);
     }
 }
 
-const userRouter = new UserRouter();
-userRouter.init();
+const usersRouter = new UsersRouter();
+usersRouter.init();
 
-export default (userRouter.router);
+export default (usersRouter.router);

@@ -12,18 +12,20 @@ export default class AuthenticateService {
     this.BearerStrategyAdmin();
   }
 
+  //Create a login strategi
+
   public static BearerStrategyUser():void {
      passport.use(
         new BearerStrategy((accessToken, done) => {
         TokensDB.find(accessToken).then((token) => {
           if (!token) return done(null, false);
-          // The request came from a client only since userId is null,
-          // therefore the client is passed back instead of a user.
-          UsersDB.findById(token.userId).then( (client) => {
-            if (!client) return done(null, false);
+          // The request came from a user only since userId is null,
+          // therefore the user is passed back instead of a user.
+          UsersDB.findById(token.userId).then( (user) => {
+            if (!user) return done(null, false);
             // To keep this example simple, restricted scopes are not implemented,
             // and this is just for illustrative purposes.
-            done(null, client, { scope: '*' });
+            done(null, { id:user.id }, { scope: '*' });
           }, done);
         },done);
       })
@@ -35,7 +37,7 @@ export default class AuthenticateService {
         new BearerStrategy((accessToken, done) => {
         TokensDB.find(accessToken).then((token) => {
           if (!token || !token.admin) return done(null, false);
-            done(null, true, { scope: '*' });
+            done(null, { admin: true }, { scope: '*' });
         },done);
       })
     );

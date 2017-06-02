@@ -25,6 +25,9 @@ export class UserController {
   }
 
   public obtain_user_info(requests, response) {
-
+    UsersDB.findById(requests.user.id).then(
+      (user) => { response.status(200).send(requests.user); },
+      (error) => { response.status(505).send(error); }
+     );
   }
 }
