@@ -11,8 +11,11 @@ class UserRouter {
     init() {
         this.router.get('/', this.controller.obtain_user_info);
     }
+    static getRouter() {
+        const userRouter = new UserRouter();
+        userRouter.init();
+        return (userRouter.router);
+    }
 }
 exports.UserRouter = UserRouter;
-const userRouter = new UserRouter();
-userRouter.init();
-exports.default = (userRouter.router);
+exports.default = UserRouter;

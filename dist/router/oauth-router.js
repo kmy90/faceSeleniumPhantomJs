@@ -14,8 +14,11 @@ class OauthRouter {
         this.router.post('/token/admin', this.controller.post_obtain_admin_token);
         this.router.get('/token/admin', this.controller.get_obtain_admin_token);
     }
+    static getRouter() {
+        const oauthRouter = new OauthRouter();
+        oauthRouter.init();
+        return (oauthRouter.router);
+    }
 }
 exports.OauthRouter = OauthRouter;
-const oauthRouter = new OauthRouter();
-oauthRouter.init();
-exports.default = (oauthRouter.router);
+exports.default = OauthRouter;

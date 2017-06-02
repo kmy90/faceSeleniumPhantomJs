@@ -15,3 +15,4 @@ class Utils {
     }
 }
 exports.Utils = Utils;
+exports.default = Utils;

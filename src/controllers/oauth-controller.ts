@@ -2,7 +2,7 @@ import * as oauth2orize from 'oauth2orize';
 import passport from 'passport';
 import { TokensDB, UsersDB } from '../db';
 import { Utils } from '../utils';
-import ConfigController from './config_controler';
+import ConfigController from '../config/controler-config';
 
 const RE_USE = 'RE-USE';
 const MULT_TOKEN = 'MULTI-TOKE';
@@ -213,3 +213,4 @@ export class OauthController {
     OauthController.obtain_admin_token_service(admin_name, admin_pass)(response);
   }
 }
+export default OauthController;

@@ -18,10 +18,14 @@ export class OauthRouter {
         this.router.get('/token/admin',this.controller.get_obtain_admin_token);
     }
 
+    public static getRouter():Router {
+        const oauthRouter = new OauthRouter();
+        oauthRouter.init();
+        return (oauthRouter.router);
+    }
+
+
 
 }
 
-const oauthRouter = new OauthRouter();
-oauthRouter.init();
-
-export default (oauthRouter.router);
+export default OauthRouter;

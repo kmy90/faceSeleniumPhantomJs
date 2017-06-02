@@ -11,8 +11,11 @@ class UsersRouter {
     init() {
         this.router.post('/', this.controller.create_user);
     }
+    static getRouter() {
+        const usersRouter = new UsersRouter();
+        usersRouter.init();
+        return (usersRouter.router);
+    }
 }
 exports.UsersRouter = UsersRouter;
-const usersRouter = new UsersRouter();
-usersRouter.init();
-exports.default = (usersRouter.router);
+exports.default = UsersRouter;

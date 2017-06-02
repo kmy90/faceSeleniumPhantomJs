@@ -5,5 +5,4 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./users-db"));
 __export(require("./tokens-db"));
-__export(require("./dbconection"));
-__export(require("./types"));
+__export(require("./database-conection"));

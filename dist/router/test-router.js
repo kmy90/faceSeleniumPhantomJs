@@ -14,8 +14,11 @@ class TestRouter {
             res.status(200).send('OK');
         });
     }
+    static getRuter() {
+        const testRouter = new TestRouter();
+        testRouter.init();
+        return testRouter.router;
+    }
 }
 exports.TestRouter = TestRouter;
-const testRouter = new TestRouter();
-testRouter.init();
-exports.default = (testRouter.router);
+exports.default = TestRouter;

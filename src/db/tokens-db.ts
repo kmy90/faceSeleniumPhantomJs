@@ -1,7 +1,7 @@
 import { Utils } from '../utils';
-import { DBConection } from '../db'
-import { Token } from './types';
-import ConfigDB from './config_db';
+import DBConection from './database-conection';
+import { Token } from '../models';
+import ConfigDB from '../config/database-config';
 
 const tokens = {};
 const TOKEN_COLECTION = 'token';

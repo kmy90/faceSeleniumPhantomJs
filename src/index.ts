@@ -1,1 +1,3 @@
-require('./config')
+import { Server } from './server';
+
+Server.init();

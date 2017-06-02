@@ -1,7 +1,7 @@
 import { Utils } from '../utils';
-import { DBConection } from '../db'
-import { User, User_DATABASE } from './types';
-import ConfigDB from './config_db';
+import DBConection from './database-conection';
+import { User, User_DATABASE } from '../models';
+import ConfigDB from '../config/database-config';
 
 const USER_COLECTION = 'user';
 

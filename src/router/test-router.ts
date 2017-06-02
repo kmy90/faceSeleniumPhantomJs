@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { DBConection } from '../db'
 
 export class TestRouter {
     router: Router;
@@ -17,9 +16,12 @@ export class TestRouter {
             res.status(200).send('OK')
         });
     }
+
+    public static getRuter():Router {
+       const testRouter = new TestRouter();
+       testRouter.init();
+       return testRouter.router;
+    }
 }
 
-const testRouter = new TestRouter();
-testRouter.init();
-
-export default (testRouter.router);
+export default TestRouter;

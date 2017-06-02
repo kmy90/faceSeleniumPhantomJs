@@ -14,9 +14,12 @@ export class UsersRouter {
     init(){
         this.router.post('/',this.controller.create_user);
     }
+
+    public static getRouter():Router{
+        const usersRouter = new UsersRouter();
+        usersRouter.init();
+        return (usersRouter.router);
+    }
 }
 
-const usersRouter = new UsersRouter();
-usersRouter.init();
-
-export default (usersRouter.router);
+export default UsersRouter;

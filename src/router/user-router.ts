@@ -14,9 +14,11 @@ export class UserRouter {
     init(){
         this.router.get('/',this.controller.obtain_user_info);
     }
+
+    public static getRouter() {
+        const userRouter = new UserRouter();
+        userRouter.init();
+        return (userRouter.router);
+    }
 }
-
-const userRouter = new UserRouter();
-userRouter.init();
-
-export default (userRouter.router);
+export default UserRouter;
