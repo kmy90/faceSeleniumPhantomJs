@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const oauthController_1 = require("../controllers/oauthController");
+const oauth_controller_1 = require("../controllers/oauth-controller");
 class OauthRouter {
     constructor() {
         this.router = express_1.Router();
-        this.controller = new oauthController_1.OauthController();
+        this.controller = new oauth_controller_1.OauthController();
         this.init();
     }
     init() {

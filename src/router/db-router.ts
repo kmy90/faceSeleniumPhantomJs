@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { DBConection } from '../db'
-import clientsDb from '../db/dbmock/client-db-mock';
 
 export class DBRouter {
     router: Router;

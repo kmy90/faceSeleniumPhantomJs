@@ -134,11 +134,11 @@ class OauthController {
     }
     static obtain_admin_token(admin_name, admin_pass) {
         if (config_controler_1.default.oauth_token_crate == RE_USE)
-            return OauthController.obtain_user_token_ru(admin_name, admin_pass);
+            return OauthController.obtain_admin_token_ru(admin_name, admin_pass);
         if (config_controler_1.default.oauth_token_crate == MULT_TOKEN)
-            return OauthController.obtain_user_token_mt(admin_name, admin_pass);
+            return OauthController.obtain_admin_token_mt(admin_name, admin_pass);
         if (config_controler_1.default.oauth_token_crate == ONLY_LAST)
-            return OauthController.obtain_user_token_ol(admin_name, admin_pass);
+            return OauthController.obtain_admin_token_ol(admin_name, admin_pass);
         return new Promise((resolve, reject) => {
             reject(new Error('Not Validate Politic'));
         });
@@ -151,7 +151,7 @@ class OauthController {
         }, (error) => { return response.status(505).send(error); });
     }
     static obtain_admin_token_service(admin_name, admin_pass) {
-        return (response) => OauthController.obtain_user_token(admin_name, admin_pass).then((token) => {
+        return (response) => OauthController.obtain_admin_token(admin_name, admin_pass).then((token) => {
             if (!token)
                 return response.status(401).send(Error('Not validate credential'));
             response.status(201).send(token);
@@ -171,12 +171,12 @@ class OauthController {
     post_obtain_admin_token(requests, response) {
         let admin_pass = requests.body.password;
         let admin_name = requests.body.name;
-        OauthController.obtain_user_token_service(admin_name, admin_pass)(response);
+        OauthController.obtain_admin_token_service(admin_name, admin_pass)(response);
     }
     get_obtain_admin_token(requests, response) {
         let admin_pass = requests.query.pass;
         let admin_name = requests.query.name;
-        OauthController.obtain_user_token_service(admin_name, admin_pass)(response);
+        OauthController.obtain_admin_token_service(admin_name, admin_pass)(response);
     }
 }
 exports.OauthController = OauthController;

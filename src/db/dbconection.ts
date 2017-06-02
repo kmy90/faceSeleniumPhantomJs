@@ -51,7 +51,6 @@ export class DBConection {
     return new Promise((resolver,reject) => {
       // Find some documents
       this.db.collection(collection).findOneAndUpdate(query, { $set: update }, (err, docs) => {
-        console.log(docs);
         if(err) {
           reject(err);
           return;

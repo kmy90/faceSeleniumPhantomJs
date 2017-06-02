@@ -1,13 +1,13 @@
-import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as passport from 'passport';
 import AuthenticateService from '../auth/authenticateService';
 import FacebookMessageRouter from '../router/facebookMessageRouter';
-import TestRouter from '../router/testRouter';
-import OauthRouter from '../router/oauthRouter';
-import DBRouter from '../router/dbRouter';
+import TestRouter from '../router/test-router';
+import OauthRouter from '../router/oauth-router';
+import DBRouter from '../router/db-router';
+import UserRouter from '../router/user-router';
 
 // Creates and configures an ExpressJS web server.
 class Server {
@@ -37,9 +37,9 @@ class Server {
     let router = express.Router();
     this.express.use('/facebookMessage', FacebookMessageRouter);
     this.express.use('/oauth', OauthRouter);
-    this.express.use('/db', DBRouter);
+    this.express.use('/db',passport.authenticate('bearer-admin', { session: false }), DBRouter);
     this.express.use('/test',passport.authenticate('bearer', { session: false }), TestRouter);
-    
+    this.express.use('/users',UserRouter);
   }
 }
 export default new Server().express;
