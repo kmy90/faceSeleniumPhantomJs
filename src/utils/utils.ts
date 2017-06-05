@@ -1,3 +1,4 @@
+import * as sha from 'js-sha3';
 import ConfigServis from '../config/service-config';
 
 export class Utils {
@@ -19,16 +20,17 @@ export class Utils {
     }
 
     public static encriptPass(pass:string):string {
-      return pass;
+      return sha.sha3_256(pass);
     }
 
     public static validatePass(pass:string, encr_pass:string):boolean {
-      return pass === encr_pass;
+      return Utils.encriptPass(pass) === encr_pass;
     }
 
     public static validateAdmin(adminName:string, adminPass:string):boolean {
-       return (adminName != ConfigServis.admin_name ||
-        adminPass != ConfigServis.admin_pass);
+      console.log('Service', ConfigServis.admin_name, ConfigServis.admin_pass)
+      return (adminName == ConfigServis.admin_name &&
+        adminPass == ConfigServis.admin_pass);
     }
 }
 export default Utils;

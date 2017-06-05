@@ -6,30 +6,24 @@ class UsersDB {
     constructor() { }
     static findById(id) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, { _id: id }).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(clientsDb[0]);
-                resolve(null);
+            dbc.findCollectionOne(USER_COLECTION, { _id: id }).then((clientDb) => {
+                resolve(clientDb);
             }, reject);
             dbc.close();
         }, reject));
     }
     static find(query) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, query).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(clientsDb);
-                resolve([]);
+            dbc.findCollectionMany(USER_COLECTION, query).then((clientsDb) => {
+                resolve(clientsDb);
             }, reject);
             dbc.close();
         }, reject));
     }
     static findByUserName(user_name) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, { user_name: user_name }).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(clientsDb[0]);
-                resolve(null);
+            dbc.findCollectionOne(USER_COLECTION, { user_name: user_name }).then((clientDb) => {
+                resolve(clientDb);
             }, reject);
             dbc.close();
         }, reject));
@@ -59,7 +53,7 @@ class UsersDB {
                 user_name: user.user_name,
                 secret_code: user.secret_code
             };
-            dbc.findCollection(USER_COLECTION, { user_name: user.user_name }).then((users) => {
+            dbc.findCollectionMany(USER_COLECTION, { user_name: user.user_name }).then((users) => {
                 if (users.length != 0)
                     return reject('user name used');
                 dbc.insertCollectionOne(USER_COLECTION, new_user).then((rest) => {

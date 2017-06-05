@@ -11,9 +11,8 @@ export class UsersDB {
     public static findById(id):Promise<User_DATABASE> {
       return new Promise((resolve, reject) =>
       DBConection.init().then((dbc) => {
-        dbc.findCollection(USER_COLECTION,{ _id:id }).then((clientsDb) => {
-          if(clientsDb.length > 0) return resolve(clientsDb[0]);
-          resolve(null);
+        dbc.findCollectionOne(USER_COLECTION,{ _id:id }).then((clientDb) => {
+          resolve(clientDb);
         },reject);
         dbc.close();
       },reject));
@@ -22,9 +21,8 @@ export class UsersDB {
     public static find(query:any):Promise<User_DATABASE[]> {
       return new Promise((resolve, reject) =>
       DBConection.init().then((dbc) => {
-        dbc.findCollection(USER_COLECTION, query).then((clientsDb) => {
-           if (clientsDb.length > 0) return resolve(clientsDb);
-          resolve([]);
+        dbc.findCollectionMany(USER_COLECTION, query).then((clientsDb) => {
+          resolve(clientsDb);
         },reject);
         dbc.close();
       },reject));
@@ -33,9 +31,8 @@ export class UsersDB {
     public static findByUserName(user_name:string):Promise<User_DATABASE> {
       return new Promise((resolve, reject) =>
       DBConection.init().then((dbc) => {
-        dbc.findCollection(USER_COLECTION,{ user_name:user_name }).then((clientsDb) => {
-           if (clientsDb.length > 0) return resolve(clientsDb[0]);
-          resolve(null);
+        dbc.findCollectionOne(USER_COLECTION,{ user_name:user_name }).then((clientDb) => {
+          resolve(clientDb);
         },reject);
         dbc.close();
       },reject));
@@ -78,7 +75,7 @@ export class UsersDB {
           user_name: user.user_name,
           secret_code: user.secret_code
         }
-        dbc.findCollection(USER_COLECTION,{ user_name: user.user_name }).then(
+        dbc.findCollectionMany(USER_COLECTION,{ user_name: user.user_name }).then(
           (users) => {
               if(users.length != 0) return reject('user name used')
               dbc.insertCollectionOne(USER_COLECTION,  new_user).then(

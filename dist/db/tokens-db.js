@@ -12,7 +12,7 @@ class TokensDB {
         database_conection_1.default.init().then((dbc) => {
             let date_expire = Date.now() - database_config_1.default.token_expire_time;
             dbc.removeCollectionMany(TOKEN_COLECTION, { $or: [{ time: { $lte: date_expire } },
-                    { time: undefined }] }).then(() => { }, (e) => { console.error('TokensDB Remove', e); });
+                    { time: undefined }] }).then(() => { }, (e) => console.error('TokensDB Remove', e));
             dbc.close();
         });
     }
@@ -25,8 +25,7 @@ class TokensDB {
     }
     static find(query) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            //Use finde and update time:Date.now()
-            dbc.findOneUpdate(TOKEN_COLECTION, query, { time: Date.now() }).then((tokensDb) => {
+            dbc.findCollectionMany(TOKEN_COLECTION, query).then((tokensDb) => {
                 return resolver(tokensDb);
             }, reject);
             dbc.close();
@@ -34,16 +33,14 @@ class TokensDB {
     }
     static findByToken(key) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            //Use finde and update time:Date.now()
-            dbc.findOneUpdate(TOKEN_COLECTION, { token: key }, { time: Date.now() }).then((tokensDb) => {
-                return resolver(tokensDb);
+            dbc.findOneUpdate(TOKEN_COLECTION, { token: key }, { time: Date.now() }).then((token) => {
+                return resolver(token);
             }, reject);
             dbc.close();
         }, reject));
     }
-    static getTokenByUserId(userId) {
+    static findByUserId(userId) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            //Use finde and update time:Date.now()
             dbc.findOneUpdate(TOKEN_COLECTION, { userId: userId }, { time: Date.now() }).then((tokensDb) => {
                 resolver(tokensDb);
             }, reject);
@@ -52,7 +49,6 @@ class TokensDB {
     }
     static getTokenAdmin() {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            //Use finde and update time:Date.now()
             dbc.findOneUpdate(TOKEN_COLECTION, { admin: true }, { time: Date.now() }).then((tokensDb) => {
                 resolver(tokensDb);
             }, reject);
@@ -96,4 +92,3 @@ class TokensDB {
 }
 exports.TokensDB = TokensDB;
 TokensDB.refreshTokensDb();
-//TokensDB.removeAllToken(); 

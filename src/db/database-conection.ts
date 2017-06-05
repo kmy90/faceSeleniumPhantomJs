@@ -8,87 +8,102 @@ export class DataBaseConection {
     this.db = db;
   }
 
-  public insertCollectionOne(collection, obj):Promise<any> {
+  // Insert some documents
+  public insertCollectionOne(collection:string, obj:any):Promise<any> {
     return new Promise((resolver,reject) => {
-      // Insert some documents
       this.db.collection(collection).insertOne(obj ,(err, result) => {
         if(err) {
           reject(err);
-          return;
-        }
-        resolver(result);
+        } else {
+          resolver(result);
+        }       
       });
     });
   }
 
-  public insertCollectionMay(collection, obj):Promise<any> {
+  // Insert some documents
+  public insertCollectionMay(collection:string, objs:any[]):Promise<any> {
     return new Promise((resolver,reject) => {
-      // Insert some documents
-      this.db.collection(collection).insertMany(obj ,(err, result) => {
+      this.db.collection(collection).insertMany(objs ,(err, result) => {
         if(err) {
           reject(err);
-          return;
+        } else {
+          resolver(result);
         }
-        resolver(result);
       });
     });
   }
 
-  public findCollection(collection, query):Promise<any> {
+  // Find some documents
+  public findCollectionMany(collection:string, query:any):Promise<any> {
     return new Promise((resolver,reject) => {
-      // Find some documents
       this.db.collection(collection).find(query).toArray((err, docs) => {
         if(err) {
           reject(err);
-          return;
+        } else {
+          resolver(docs); 
         }
-        resolver(docs);
+       
       });
     });
   }
 
-  public findOneUpdate(collection, query, update):Promise<any> {
+  // Find some documents
+  public findCollectionOne(collection:string, query:any):Promise<any> {
     return new Promise((resolver,reject) => {
-      // Find some documents
+      this.db.collection(collection).find(query).toArray((err, docs) => {
+        if(err) {
+          reject(err);
+        } else if(docs.length > 0) { 
+          resolver(docs[0]);
+        } else {
+          resolver(null);
+        }
+
+      });
+    });
+  }
+
+ // Find some documents
+  public findOneUpdate(collection:string, query:any, update:any):Promise<any> {
+    return new Promise((resolver,reject) => {
       this.db.collection(collection).findOneAndUpdate(query, { $set: update }, (err, docs) => {
         if(err) {
           reject(err);
-          return;
+        } else {
+         resolver(docs.value);
         }
-        resolver(docs.value);
       });
     });
   }
 
-  public updateCollectionOne(collection, query,update):Promise<any> {
+  // Update document
+  public updateCollectionOne(collection:string, query:any, update:any):Promise<any> {
     return new Promise((resolver,reject) => {
-      // Update document where a is 2, set b equal to 1
       this.db.collection(collection).updateOne(query, { $set: update }, (err, result) => {
-        console.log("Updated");
         if(err) {
           reject(err);
-          return;
+        } else {
+          resolver(result);
         }
-        resolver(result);
       });
     });
   }
 
-  public updateCollectionMany(collection, query,update):Promise<any> {
+  // Update document
+  public updateCollectionMany(collection:string, query:any, update:any):Promise<any> {
     return new Promise((resolver,reject) => {
-      // Update document where a is 2, set b equal to 1
       this.db.collection(collection).updateMany(query, { $set: update }, (err, result) => {
-        console.log("Updated");
         if(err) {
           reject(err);
-          return;
+        } else {
+          resolver(result);
         }
-        resolver(result);
       });
     });
   }
 
-  public removeCollectionOne(collection, query):Promise<any> {
+  public removeCollectionOne(collection:string, query:any):Promise<any> {
     return new Promise((resolver,reject) => {
       this.db.collection(collection).deleteOne(query, (err, result) => {
         resolver(result);
@@ -96,7 +111,7 @@ export class DataBaseConection {
     });
   }
 
-  public removeCollectionMany(collection, query):Promise<any> {
+  public removeCollectionMany(collection:string, query:any):Promise<any> {
     return new Promise((resolver,reject) => {
       this.db.collection(collection).deleteMany(query, (err, result) => {
         resolver(result);
@@ -104,7 +119,7 @@ export class DataBaseConection {
     });
   }
 
-  public close():any {
+  public close():Promise<any> {
     return new Promise((resolver,reject) => {
       this.db.close();
     });

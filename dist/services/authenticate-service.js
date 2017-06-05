@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport = require("passport");
 const passport_http_bearer = require("passport-http-bearer");
 const passport_http = require("passport-http");
-const service_config_1 = require("../config/service-config");
 const utils_1 = require("../utils");
 const db_1 = require("../db");
 const BasicStrategy = passport_http.BasicStrategy;
@@ -35,11 +34,13 @@ class AuthenticateService {
     }
     static BasicAdmin() {
         passport.use('basic-admin', new BasicStrategy((name, pass, done) => {
-            if (name !== service_config_1.default.admin_name)
-                return done(null, false);
-            if (pass !== service_config_1.default.admin_pass)
-                return done(null, false);
-            done(null, { id: ADMIN_ID, admin: true });
+            console.log(name, pass);
+            if (!utils_1.Utils.validateAdmin(name, pass)) {
+                done(null, false);
+            }
+            else {
+                done(null, { id: ADMIN_ID, admin: true });
+            }
         }));
     }
     static BearerStrategyUser() {

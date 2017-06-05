@@ -7,11 +7,11 @@ class TestRouter {
         this.init();
     }
     init() {
-        this.router.post('/post', (req, res) => {
+        this.router.post('/', (req, res) => {
             console.log(req.body);
             res.status(200).send('OK');
         });
-        this.router.get('/get', (req, res) => {
+        this.router.get('/', (req, res) => {
             console.log(req.body);
             res.status(200).send('OK');
         });

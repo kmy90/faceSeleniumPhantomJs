@@ -40,9 +40,12 @@ export class AuthenticateService {
 
   private static BasicAdmin() {
     passport.use('basic-admin', new BasicStrategy((name, pass, done) => {
-      if(name !== Config.admin_name) return done(null, false);
-      if(pass !== Config.admin_pass) return done(null, false);
-      done(null, { id:ADMIN_ID, admin:true });
+      console.log(name,pass);
+      if(!Utils.validateAdmin(name,pass)) {
+        done(null, false);
+      } else {
+        done(null, { id:ADMIN_ID, admin:true });
+      }
     }));
   }
 

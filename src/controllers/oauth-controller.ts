@@ -1,5 +1,5 @@
 import * as oauth2orize from 'oauth2orize';
-import { Request , Response } from 'express'
+import { Request , Response } from 'express';
 import passport from 'passport';
 import { TokensDB, UsersDB } from '../db';
 import { Utils } from '../utils';
@@ -91,7 +91,7 @@ export class OauthController {
   //Exist only on token active per user
   private static obtain_user_token_ru(user:User):Promise<Token>{
     return new Promise((resolve, reject) => {
-        TokensDB.getTokenByUserId(user.id).then((token) => {
+        TokensDB.findByUserId(user.id).then((token) => {
           if(!token) {
               this.creat_new_user_token(user).then(resolve, reject);
           } else {
@@ -190,13 +190,13 @@ export class OauthController {
 
   //Method to server ///**************************
 
-	public obtain_user_token(requests:Request, response:Response) {
+	public obtain_user_token(requests:Request, response:Response):void {
     let secret_code = requests.body.secret_code;
     let userName = requests.body.userName;
     OauthController.obtain_user_token_service(userName, secret_code)(response);
 	}
 
-  public clean_user_token(requests:Request, response:Response) {
+  public clean_user_token(requests:Request, response:Response):void {
     let secret_code = requests.body.secret_code;
     let userName = requests.body.userName;
     UsersDB.findByUserName(userName).then(
@@ -215,26 +215,28 @@ export class OauthController {
   }
 
   public obtain_admin_token(requests:Request, response:Response):void {
-    let admin_pass = requests.body.password || requests.query.pass;
+    /*let admin_pass = requests.body.password || requests.query.pass;
     let admin_name = requests.body.name || requests.query.name;
-    if(Utils.validateAdmin(admin_name, admin_pass)) {
+    console.log(admin_name, admin_pass);
+    if(!Utils.validateAdmin(admin_name, admin_pass)) {
       response.status(401).send('Unauthorized');
-    } else {
+    } else {*/
       OauthController.obtain_admin_token_service()(response);
-    }
+   //}
   }
 
   public clean_admin_token(requests:Request, response:Response):void {
-    let admin_pass = requests.body.password || requests.query.pass;
+    /*let admin_pass = requests.body.password || requests.query.pass;
     let admin_name = requests.body.name || requests.query.name;
-    if(Utils.validateAdmin(admin_name, admin_pass)) {
+    console.log(admin_name, admin_pass);
+    if(!Utils.validateAdmin(admin_name, admin_pass)) {
       response.status(401).send('Unauthorized');
-    } else {
+    } else {*/
       TokensDB.removeAdminToken().then(
         () => response.status(204).send(''),
         (error) => response.status(505).send(error)
       );
-    }
+   //}
   }
 }
 export default OauthController;

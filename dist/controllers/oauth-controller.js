@@ -67,7 +67,7 @@ class OauthController {
     //Exist only on token active per user
     static obtain_user_token_ru(user) {
         return new Promise((resolve, reject) => {
-            db_1.TokensDB.getTokenByUserId(user.id).then((token) => {
+            db_1.TokensDB.findByUserId(user.id).then((token) => {
                 if (!token) {
                     this.creat_new_user_token(user).then(resolve, reject);
                 }
@@ -168,24 +168,24 @@ class OauthController {
         }, (error) => response.status(505).send(error));
     }
     obtain_admin_token(requests, response) {
-        let admin_pass = requests.body.password || requests.query.pass;
+        /*let admin_pass = requests.body.password || requests.query.pass;
         let admin_name = requests.body.name || requests.query.name;
-        if (utils_1.Utils.validateAdmin(admin_name, admin_pass)) {
-            response.status(401).send('Unauthorized');
-        }
-        else {
-            OauthController.obtain_admin_token_service()(response);
-        }
+        console.log(admin_name, admin_pass);
+        if(!Utils.validateAdmin(admin_name, admin_pass)) {
+          response.status(401).send('Unauthorized');
+        } else {*/
+        OauthController.obtain_admin_token_service()(response);
+        //}
     }
     clean_admin_token(requests, response) {
-        let admin_pass = requests.body.password || requests.query.pass;
+        /*let admin_pass = requests.body.password || requests.query.pass;
         let admin_name = requests.body.name || requests.query.name;
-        if (utils_1.Utils.validateAdmin(admin_name, admin_pass)) {
-            response.status(401).send('Unauthorized');
-        }
-        else {
-            db_1.TokensDB.removeAdminToken().then(() => response.status(204).send(''), (error) => response.status(505).send(error));
-        }
+        console.log(admin_name, admin_pass);
+        if(!Utils.validateAdmin(admin_name, admin_pass)) {
+          response.status(401).send('Unauthorized');
+        } else {*/
+        db_1.TokensDB.removeAdminToken().then(() => response.status(204).send(''), (error) => response.status(505).send(error));
+        //}
     }
 }
 exports.OauthController = OauthController;
