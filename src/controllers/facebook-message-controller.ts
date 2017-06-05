@@ -1,13 +1,11 @@
 import { Request , Response } from 'express'
 import SeleniumService from '../services/selenium-service';
 import { Step } from '../models';
-import Config from '../config/controller-config';
-
 
 export class FacebookMessageController {
   constructor() {}
    public sendAutomatedMessage(request: Request, response: Response) {
-      let selService = new SeleniumService(Config.selenium_selected_browser);
+      let selService = new SeleniumService();
       //get Url
       selService.getUrl(request.body.endpoint_x).then(() => {
          let steps = request.body.steps_x;

@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const selenium_webdriver_1 = require("selenium-webdriver");
+const service_config_1 = require("../config/service-config");
 class SeleniumService {
-    constructor(browser) {
-        this.driver = new selenium_webdriver_1.Builder().forBrowser(browser).build();
+    constructor() {
+        this.driver = new selenium_webdriver_1.Builder().forBrowser(service_config_1.default.selenium_selected_browser).build();
     }
     getUrl(url) {
         let { driver } = this;

@@ -17,7 +17,9 @@ export class TokensDB {
             let date_expire = Date.now() - ConfigDB.token_expire_time;
             dbc.removeCollectionMany( TOKEN_COLECTION,
                 { $or:[ {time: { $lte:date_expire }},
-                { time: undefined} ] }).then(()=>{},(e)=>{ console.error('TokensDB Remove', e);});
+                { time: undefined} ] }).then(()=>{},
+                (e)=> console.error('TokensDB Remove', e)
+            );
             dbc.close();
         });
     }
@@ -29,21 +31,29 @@ export class TokensDB {
         }
     }
 
-    public static find(key):Promise<Token> {
+    public static find(query):Promise<Token[]> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
-            //Use finde and update time:Date.now()
-            dbc.findOneUpdate(TOKEN_COLECTION,{ token:key },{ time:Date.now() }).then((tokensDb) => {
+            dbc.findCollectionMany(TOKEN_COLECTION, query).then((tokensDb) => {
               return resolver(tokensDb);
             },reject);
             dbc.close();
         },reject));
     }
 
-    public static getTokenByUserId( userId):Promise<Token> {
+    public static findByToken(key):Promise<Token> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
-            //Use finde and update time:Date.now()
+            dbc.findOneUpdate(TOKEN_COLECTION,{ token:key },{ time:Date.now() }).then((token) => {
+              return resolver(token);
+            },reject);
+            dbc.close();
+        },reject));
+    }
+
+    public static findByUserId(userId):Promise<Token> {
+        return new Promise((resolver, reject) =>
+        DBConection.init().then((dbc) => {
             dbc.findOneUpdate(TOKEN_COLECTION,{ userId:userId }, { time:Date.now() }).then((tokensDb) => {
                resolver(tokensDb);
             },reject);
@@ -54,7 +64,6 @@ export class TokensDB {
     public static getTokenAdmin():Promise<Token> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
-            //Use finde and update time:Date.now()
             dbc.findOneUpdate(TOKEN_COLECTION,{ admin:true }, { time:Date.now() }).then((tokensDb) => {
                resolver(tokensDb);
             },reject);
@@ -90,10 +99,9 @@ export class TokensDB {
         },reject));
     }
 
-    public static createAdminToken():Promise<Token> {
+    public static createAdminToken(token):Promise<Token> {
         return new Promise((resolver, reject)=>
         DBConection.init().then((dbc) =>{
-            const token = Utils.getUid(ConfigDB.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, admin:true, time:Date.now() }).then(
                 (rest) => {
                     resolver(rest.ops[0]);
@@ -102,10 +110,9 @@ export class TokensDB {
         },reject));
     }
 
-    public static createUserToken(userId):Promise<Token> {
+    public static createUserToken(userId, token):Promise<Token> {
         return new Promise((resolver, reject)=>
         DBConection.init().then((dbc) =>{
-            const token = Utils.getUid(ConfigDB.token_size);
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, userId, time:Date.now() }).then(
                 (rest) => {
                     resolver(rest.ops[0]);
@@ -116,4 +123,3 @@ export class TokensDB {
 }
 
 TokensDB.refreshTokensDb(); 
-//TokensDB.removeAllToken();

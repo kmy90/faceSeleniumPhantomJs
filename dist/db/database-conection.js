@@ -6,77 +6,97 @@ class DataBaseConection {
     constructor(db) {
         this.db = db;
     }
+    // Insert some documents
     insertCollectionOne(collection, obj) {
         return new Promise((resolver, reject) => {
-            // Insert some documents
             this.db.collection(collection).insertOne(obj, (err, result) => {
                 if (err) {
                     reject(err);
-                    return;
                 }
-                resolver(result);
+                else {
+                    resolver(result);
+                }
             });
         });
     }
-    insertCollectionMay(collection, obj) {
+    // Insert some documents
+    insertCollectionMay(collection, objs) {
         return new Promise((resolver, reject) => {
-            // Insert some documents
-            this.db.collection(collection).insertMany(obj, (err, result) => {
+            this.db.collection(collection).insertMany(objs, (err, result) => {
                 if (err) {
                     reject(err);
-                    return;
                 }
-                resolver(result);
+                else {
+                    resolver(result);
+                }
             });
         });
     }
-    findCollection(collection, query) {
+    // Find some documents
+    findCollectionMany(collection, query) {
         return new Promise((resolver, reject) => {
-            // Find some documents
             this.db.collection(collection).find(query).toArray((err, docs) => {
                 if (err) {
                     reject(err);
-                    return;
                 }
-                resolver(docs);
+                else {
+                    resolver(docs);
+                }
             });
         });
     }
+    // Find some documents
+    findCollectionOne(collection, query) {
+        return new Promise((resolver, reject) => {
+            this.db.collection(collection).find(query).toArray((err, docs) => {
+                if (err) {
+                    reject(err);
+                }
+                else if (docs.length > 0) {
+                    resolver(docs[0]);
+                }
+                else {
+                    resolver(null);
+                }
+            });
+        });
+    }
+    // Find some documents
     findOneUpdate(collection, query, update) {
         return new Promise((resolver, reject) => {
-            // Find some documents
             this.db.collection(collection).findOneAndUpdate(query, { $set: update }, (err, docs) => {
                 if (err) {
                     reject(err);
-                    return;
                 }
-                resolver(docs.value);
+                else {
+                    resolver(docs.value);
+                }
             });
         });
     }
+    // Update document
     updateCollectionOne(collection, query, update) {
         return new Promise((resolver, reject) => {
-            // Update document where a is 2, set b equal to 1
             this.db.collection(collection).updateOne(query, { $set: update }, (err, result) => {
-                console.log("Updated");
                 if (err) {
                     reject(err);
-                    return;
                 }
-                resolver(result);
+                else {
+                    resolver(result);
+                }
             });
         });
     }
+    // Update document
     updateCollectionMany(collection, query, update) {
         return new Promise((resolver, reject) => {
-            // Update document where a is 2, set b equal to 1
             this.db.collection(collection).updateMany(query, { $set: update }, (err, result) => {
-                console.log("Updated");
                 if (err) {
                     reject(err);
-                    return;
                 }
-                resolver(result);
+                else {
+                    resolver(result);
+                }
             });
         });
     }

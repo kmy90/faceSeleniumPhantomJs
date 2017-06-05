@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const user_controler_1 = require("../controllers/user-controler");
-class UsersRouter {
+class CreateUserRouter {
     constructor() {
         this.router = express_1.Router();
         this.controller = new user_controler_1.UserController();
@@ -10,14 +10,12 @@ class UsersRouter {
     }
     init() {
         this.router.post('/', this.controller.create_user);
-        this.router.delete('/', this.controller.delete_user);
-        this.router.get('/', this.controller.obtain_users_info);
     }
     static getRouter() {
-        const usersRouter = new UsersRouter();
-        usersRouter.init();
-        return (usersRouter.router);
+        const createUser = new CreateUserRouter();
+        createUser.init();
+        return createUser.router;
     }
 }
-exports.UsersRouter = UsersRouter;
-exports.default = UsersRouter;
+exports.CreateUserRouter = CreateUserRouter;
+exports.default = CreateUserRouter;

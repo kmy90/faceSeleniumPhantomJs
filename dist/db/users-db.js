@@ -1,75 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../utils");
 const database_conection_1 = require("./database-conection");
-const database_config_1 = require("../config/database-config");
 const USER_COLECTION = 'user';
 class UsersDB {
     constructor() { }
-    static obfuscate_user_info(db_client) {
-        let { _id, secret_code, user_name } = db_client;
-        return { id: _id, secret_code, user_name };
-    }
-    static obfuscate_users_info(db_clients) {
-        let ret = [];
-        for (let i = 0; i < db_clients.length; i++) {
-            ret.push(UsersDB.obfuscate_user_info(db_clients[i]));
-        }
-        return ret;
-    }
     static findById(id) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, { _id: id }).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(UsersDB.obfuscate_user_info(clientsDb[0]));
-                resolve(null);
+            dbc.findCollectionOne(USER_COLECTION, { _id: id }).then((clientDb) => {
+                resolve(clientDb);
             }, reject);
             dbc.close();
         }, reject));
     }
-    static findById_DB(id) {
+    static find(query) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, { _id: id }).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(clientsDb[0]);
-                resolve(null);
+            dbc.findCollectionMany(USER_COLECTION, query).then((clientsDb) => {
+                resolve(clientsDb);
             }, reject);
             dbc.close();
         }, reject));
     }
     static findByUserName(user_name) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, { user_name: user_name }).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(UsersDB.obfuscate_user_info(clientsDb[0]));
-                resolve(null);
+            dbc.findCollectionOne(USER_COLECTION, { user_name: user_name }).then((clientDb) => {
+                resolve(clientDb);
             }, reject);
             dbc.close();
         }, reject));
     }
-    static findByUserName_DB(user_name) {
-        return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findCollection(USER_COLECTION, { user_name: user_name }).then((clientsDb) => {
-                if (clientsDb.length > 0)
-                    return resolve(clientsDb[0]);
-                resolve(null);
-            }, reject);
-            dbc.close();
-        }, reject));
-    }
-    static user_reset_secret(user_id) {
+    static update_userById(user_id, user) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findOneUpdate(USER_COLECTION, { _id: user_id }, { secret_code: utils_1.Utils.getUid(database_config_1.default.user_secert_code_size) }).then((tokenDb) => {
-                resolver(tokenDb);
-            }, reject);
+            dbc.findOneUpdate(USER_COLECTION, { _id: user_id }, user).then((user) => resolver(user), reject);
             dbc.close();
         }, reject));
     }
-    static update_user(user_id, client) {
+    static update_users(querry, user) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.findOneUpdate(USER_COLECTION, { _id: user_id }, { client }).then((tokenDb) => {
-                resolver(tokenDb);
-            }, reject);
+            dbc.updateCollectionMany(USER_COLECTION, querry, user).then((res) => resolver(res), reject);
+            dbc.close();
+        }, reject));
+    }
+    static delete_userById(user_id) {
+        return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
+            dbc.removeCollectionOne(USER_COLECTION, { _id: user_id }).then((user) => resolver(user), reject);
             dbc.close();
         }, reject));
     }
@@ -78,13 +51,13 @@ class UsersDB {
             let new_user = {
                 password: user.password,
                 user_name: user.user_name,
-                secret_code: utils_1.Utils.getUid(database_config_1.default.user_secert_code_size)
+                secret_code: user.secret_code
             };
-            dbc.findCollection(USER_COLECTION, { user_name: user.user_name }).then((users) => {
+            dbc.findCollectionMany(USER_COLECTION, { user_name: user.user_name }).then((users) => {
                 if (users.length != 0)
                     return reject('user name used');
                 dbc.insertCollectionOne(USER_COLECTION, new_user).then((rest) => {
-                    resolver(UsersDB.obfuscate_user_info(rest.ops[0]));
+                    resolver(rest.ops[0]);
                     dbc.close();
                 }, (e) => { dbc.close(); reject(e); });
             }, (e) => { dbc.close(); reject(e); });

@@ -3,6 +3,7 @@ import * as debug from 'debug';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as passport from 'passport';
 
 import RutingServer from '../router';
 import AuthenticateService from '../services/authenticate-service';
@@ -40,6 +41,8 @@ export class Server {
     this.express.use(logger('dev'));
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
+    this.express.use(passport.initialize());
+    this.express.use(passport.session());
   }
 
   // Configure API endpoints.
