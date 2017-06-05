@@ -32,12 +32,12 @@ class SeleniumService {
             // pointer to findElement_x.attribute
             let { attributes_x } = findElement_x;
             let counter = 0;
-            for (let key in attributes_x) {
+            attributes_x.forEach(attribute => {
                 counter += 1;
-                stringQuery += "@" + key + "='" + attributes_x[key] + "'";
+                stringQuery += "@" + attribute.name_x + "='" + attribute.value_x + "'";
                 if (counter != Object.keys(attributes_x).length)
                     stringQuery += ' and ';
-            }
+            });
             stringQuery += ']';
             if (typeof this[action_x.type_x + 'Handler'] === 'function')
                 return this[action_x.type_x + 'Handler'](stringQuery, action_x);
@@ -49,7 +49,7 @@ class SeleniumService {
         let { driver } = this;
         return new Promise((resolve, reject) => {
             let element = driver.findElement(selenium_webdriver_1.By.xpath(stringQuery));
-            if (action_x.hasOwnProperty("keypress_x"))
+            if (action_x.keypress_x)
                 element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(resolve).catch(reject);
             else
                 element.sendKeys(action_x.value_x).then(resolve).catch(reject);

@@ -5,14 +5,19 @@ export interface Step {
 
 export interface Action_x {
   type_x?:string;
-  for_x?:string;
-  includes_x?:string;
-  timeout_x?:number;
   value_x?:string;
+  timeout_x?:number;
+  keypress_x?:string;
+  includes_x?:string;
+  for_x?:string;
 }
-
 
 export interface FindElement_x {
     nodeName_x:string,
-    attributes_x:any
+    attributes_x:Attribute_x[]
+}
+
+export interface Attribute_x {
+    name_x:string,
+    value_x:string
 }
