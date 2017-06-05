@@ -8,9 +8,11 @@ class TestRouter {
     }
     init() {
         this.router.post('/post', (req, res) => {
+            console.log(req.body);
             res.status(200).send('OK');
         });
         this.router.get('/get', (req, res) => {
+            console.log(req.body);
             res.status(200).send('OK');
         });
     }

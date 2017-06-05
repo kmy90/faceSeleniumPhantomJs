@@ -10,9 +10,11 @@ class OauthRouter {
         this.init();
     }
     init() {
-        this.router.post('/token', this.controller.post_obtain_user_token);
-        this.router.post('/token/admin', this.controller.post_obtain_admin_token);
-        this.router.get('/token/admin', passport.authenticate('basic-admin', { session: false }), this.controller.get_obtain_admin_token);
+        this.router.delete('/token', this.controller.clean_user_token);
+        this.router.post('/token', this.controller.obtain_user_token);
+        this.router.post('/token/admin', this.controller.obtain_admin_token);
+        this.router.get('/token/admin', passport.authenticate('basic-admin', { session: false }), this.controller.obtain_admin_token);
+        this.router.delete('/token/admin', passport.authenticate('basic-admin', { session: false }), this.controller.clean_admin_token);
     }
     static getRouter() {
         const oauthRouter = new OauthRouter();

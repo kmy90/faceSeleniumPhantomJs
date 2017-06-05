@@ -13,7 +13,7 @@ export class RutingServer{
     express_server.use('/sandbox/facebookMessage', FacebookMessageRouter.getRouter());
     express_server.use('/oauth', OauthRouter.getRouter());
     express_server.use('/db',passport.authenticate('bearer-admin', { session: false }), DBRouter.getRouter());
-    express_server.use('/test',passport.authenticate(['bearer', 'bearer-admin'], { session: false }), TestRouter.getRuter());
+    express_server.use('/test',/*passport.authenticate(['bearer', 'bearer-admin'], { session: false }),*/ TestRouter.getRuter());
     express_server.use('/users',passport.authenticate('bearer-admin', { session: false }),UsersRouter.getRouter());
     express_server.use('/user', passport.authenticate('basic',{ session: false }), UserRouter.getRouter());
   }

@@ -1,3 +1,5 @@
+import ConfigServis from '../config/service-config';
+
 export class Utils {
 
     public static getUid(length):string {
@@ -22,6 +24,11 @@ export class Utils {
 
     public static validatePass(pass:string, encr_pass:string):boolean {
       return pass === encr_pass;
+    }
+
+    public static validateAdmin(adminName:string, adminPass:string):boolean {
+       return (adminName != ConfigServis.admin_name ||
+        adminPass != ConfigServis.admin_pass);
     }
 }
 export default Utils;

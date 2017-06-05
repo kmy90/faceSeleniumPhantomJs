@@ -29,7 +29,18 @@ export class TokensDB {
         }
     }
 
-    public static find(key):Promise<Token> {
+    public static find(query):Promise<Token> {
+        return new Promise((resolver, reject) =>
+        DBConection.init().then((dbc) => {
+            //Use finde and update time:Date.now()
+            dbc.findOneUpdate(TOKEN_COLECTION, query ,{ time:Date.now() }).then((tokensDb) => {
+              return resolver(tokensDb);
+            },reject);
+            dbc.close();
+        },reject));
+    }
+
+    public static findByToken(key):Promise<Token> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
             //Use finde and update time:Date.now()

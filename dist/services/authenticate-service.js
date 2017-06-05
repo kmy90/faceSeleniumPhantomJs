@@ -44,7 +44,7 @@ class AuthenticateService {
     }
     static BearerStrategyUser() {
         passport.use(new BearerStrategy((accessToken, done) => {
-            db_1.TokensDB.find(accessToken).then((token) => {
+            db_1.TokensDB.findByToken(accessToken).then((token) => {
                 if (!token)
                     return done(null, false);
                 // The request came from a user only since userId is null,
@@ -61,7 +61,7 @@ class AuthenticateService {
     }
     static BearerStrategyAdmin() {
         passport.use('bearer-admin', new BearerStrategy((accessToken, done) => {
-            db_1.TokensDB.find(accessToken).then((token) => {
+            db_1.TokensDB.findByToken(accessToken).then((token) => {
                 if (!token || !token.admin)
                     return done(null, false);
                 done(null, { admin: true }, { scope: '*' });

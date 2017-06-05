@@ -14,6 +14,16 @@ class UsersDB {
             dbc.close();
         }, reject));
     }
+    static find(query) {
+        return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
+            dbc.findCollection(USER_COLECTION, query).then((clientsDb) => {
+                if (clientsDb.length > 0)
+                    return resolve(clientsDb);
+                resolve([]);
+            }, reject);
+            dbc.close();
+        }, reject));
+    }
     static findByUserName(user_name) {
         return new Promise((resolve, reject) => database_conection_1.default.init().then((dbc) => {
             dbc.findCollection(USER_COLECTION, { user_name: user_name }).then((clientsDb) => {
@@ -24,9 +34,21 @@ class UsersDB {
             dbc.close();
         }, reject));
     }
-    static update_user(user_id, user) {
+    static update_userById(user_id, user) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
             dbc.findOneUpdate(USER_COLECTION, { _id: user_id }, user).then((user) => resolver(user), reject);
+            dbc.close();
+        }, reject));
+    }
+    static update_users(querry, user) {
+        return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
+            dbc.updateCollectionMany(USER_COLECTION, querry, user).then((res) => resolver(res), reject);
+            dbc.close();
+        }, reject));
+    }
+    static delete_userById(user_id) {
+        return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
+            dbc.removeCollectionOne(USER_COLECTION, { _id: user_id }).then((user) => resolver(user), reject);
             dbc.close();
         }, reject));
     }

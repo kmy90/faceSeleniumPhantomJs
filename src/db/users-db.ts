@@ -19,6 +19,17 @@ export class UsersDB {
       },reject));
     }
 
+    public static find(query:any):Promise<User_DATABASE[]> {
+      return new Promise((resolve, reject) =>
+      DBConection.init().then((dbc) => {
+        dbc.findCollection(USER_COLECTION, query).then((clientsDb) => {
+           if (clientsDb.length > 0) return resolve(clientsDb);
+          resolve([]);
+        },reject);
+        dbc.close();
+      },reject));
+    }
+
     public static findByUserName(user_name:string):Promise<User_DATABASE> {
       return new Promise((resolve, reject) =>
       DBConection.init().then((dbc) => {
@@ -30,7 +41,7 @@ export class UsersDB {
       },reject));
     }
 
-    public static update_user(user_id:string, user:User_DATABASE) {
+    public static update_userById(user_id:string, user:User_DATABASE) {
      return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
             dbc.findOneUpdate(USER_COLECTION,
@@ -39,6 +50,25 @@ export class UsersDB {
             dbc.close();
       },reject));
     }
+
+    public static update_users(querry:any, user:User_DATABASE) {
+     return new Promise((resolver, reject) =>
+        DBConection.init().then((dbc) => {
+            dbc.updateCollectionMany(USER_COLECTION,
+              querry,
+              user).then((res) => resolver(res), reject);
+            dbc.close();
+      },reject));
+    }
+
+    public static delete_userById(user_id:string) {
+     return new Promise((resolver, reject) =>
+        DBConection.init().then((dbc) => {
+            dbc.removeCollectionOne(USER_COLECTION,{ _id: user_id }).then((user) => resolver(user), reject);
+            dbc.close();
+      },reject));
+    }
+
 
     public static create_user(user:User_DATABASE):Promise<User_DATABASE> {
       return new Promise((resolver, reject) => 

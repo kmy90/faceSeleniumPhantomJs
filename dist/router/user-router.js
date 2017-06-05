@@ -10,6 +10,8 @@ class UserRouter {
     }
     init() {
         this.router.get('/', this.controller.obtain_user_info);
+        this.router.get('/rest/password', this.controller.change_user_pass);
+        this.router.get('/rest/secret_code', this.controller.change_user_secret);
     }
     static getRouter() {
         const userRouter = new UserRouter();

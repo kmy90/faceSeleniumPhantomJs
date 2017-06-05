@@ -23,7 +23,16 @@ class TokensDB {
             timer_token_refresh = setTimeout(TokensDB.refreshTokensDb, database_config_1.default.token_refresh_time);
         }
     }
-    static find(key) {
+    static find(query) {
+        return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
+            //Use finde and update time:Date.now()
+            dbc.findOneUpdate(TOKEN_COLECTION, query, { time: Date.now() }).then((tokensDb) => {
+                return resolver(tokensDb);
+            }, reject);
+            dbc.close();
+        }, reject));
+    }
+    static findByToken(key) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
             //Use finde and update time:Date.now()
             dbc.findOneUpdate(TOKEN_COLECTION, { token: key }, { time: Date.now() }).then((tokensDb) => {

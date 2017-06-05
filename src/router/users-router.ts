@@ -13,6 +13,8 @@ export class UsersRouter {
 
     init(){
         this.router.post('/',this.controller.create_user);
+        this.router.delete('/',this.controller.delete_user);
+        this.router.get('/',this.controller.obtain_users_info); 
     }
 
     public static getRouter():Router{

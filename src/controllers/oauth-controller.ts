@@ -1,4 +1,5 @@
 import * as oauth2orize from 'oauth2orize';
+import { Request , Response } from 'express'
 import passport from 'passport';
 import { TokensDB, UsersDB } from '../db';
 import { Utils } from '../utils';
@@ -65,7 +66,7 @@ export class OauthController {
 		server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => {
 		  // Validate the client
       console.log('2');
-      OauthController.obtain_user_token(client.userName, client.secret_code).then(
+      OauthController.obtain_user_token_politics(client.userName, client.secret_code).then(
         (token) => {
           if(token) return done(null, false);
           done(null, false);
@@ -75,16 +76,24 @@ export class OauthController {
 		}));
 	}
 
+  //Create a token for a user
   private static creat_new_user_token(user:User):Promise<Token>{
     let token = Utils.getUid(Config.oauth_token_size);
     return TokensDB.createUserToken(user.id,token); 
   }
+
+  //Create a token to admin
+  private static create_new_admin_token():Promise<Token>{
+     let token = Utils.getUid(Config.oauth_token_size);
+    return TokensDB.createAdminToken(token);
+  }
+
   //Exist only on token active per user
   private static obtain_user_token_ru(user:User):Promise<Token>{
     return new Promise((resolve, reject) => {
         TokensDB.getTokenByUserId(user.id).then((token) => {
           if(!token) {
-              OauthController.creat_new_user_token(user).then(resolve, reject);
+              this.creat_new_user_token(user).then(resolve, reject);
           } else {
              resolve(token);
           }
@@ -94,22 +103,7 @@ export class OauthController {
   
   //Have Multiple valid token per user
   private static obtain_user_token_mt(user:User):Promise<Token>{
-    return OauthController.creat_new_user_token(user); 
-  }
-  
-  //Ony last token are active
-  private static obtain_user_token_ol(user:User):Promise<Token>{
-    return new Promise((resolve, reject) => { 
-        TokensDB.removeUserToken(user.id).then(
-          ()=>{ OauthController.creat_new_user_token(user).then(resolve, reject);},
-          reject
-        )
-    });
-  }
-
-  private static create_new_admin_token():Promise<Token>{
-     let token = Utils.getUid(Config.oauth_token_size);
-    return TokensDB.createAdminToken(token);
+    return this.creat_new_user_token(user); 
   }
 
   //Exist only on token active per user
@@ -125,12 +119,22 @@ export class OauthController {
     });
   }
   
-  //Have Multiple valid token per user
+  //Token Politic "MULT_TOKEN": Create a new Token, and not remove older tokens
   private static obtain_admin_token_mt():Promise<Token>{
     return this.create_new_admin_token();
   }
   
-  //Ony last token are active
+  //Token Politic "ONLT_LAST": Create a new token fora a user, older are remove
+  private static obtain_user_token_ol(user:User):Promise<Token>{
+    return new Promise((resolve, reject) => { 
+        TokensDB.removeUserToken(user.id).then(
+          ()=>{ this.creat_new_user_token(user).then(resolve, reject);},
+          reject
+        )
+    });
+  }
+
+  //Token Politic "ONLT_LAST": Create a new token to admin, older are remove
   private static obtain_admin_token_ol():Promise<Token>{
     return new Promise((resolve, reject) => { 
         TokensDB.removeAdminToken().then(
@@ -140,7 +144,8 @@ export class OauthController {
       });
   }
 
-  private static obtain_user_token(userName:string, secret_code:string):Promise<Token> {
+  //Obtain token for a user, used server config politics
+  private static obtain_user_token_politics(userName:string, secret_code:string):Promise<Token> {
     return new Promise((resolver, reject) => {
       UsersDB.findByUserName(userName).then(
         (user) => {
@@ -152,6 +157,7 @@ export class OauthController {
     })
   }
 
+  //Obtain token to admin, used server config politics
   private static obtain_admin_token():Promise<any> {
     if(Config.oauth_token_crate == RE_USE) return this.obtain_admin_token_ru();
     if(Config.oauth_token_crate == MULT_TOKEN) return this.obtain_admin_token_mt();
@@ -161,54 +167,74 @@ export class OauthController {
     });
   }
 
+  //Return function to response a server obtain user token
   private static obtain_user_token_service(userName:string, secret_code:string) {
-    return (response) =>
-    OauthController.obtain_user_token(userName, secret_code).then(
-        (token) => {
-          if(!token) return response.status(401).send(Error('Not validate credential'));
-          response.status(201).send(token);
-        },
-        (error) => { return response.status(505).send(error); }
-    );
+    return (response:Response) =>
+      this.obtain_user_token_politics(userName, secret_code).then(
+          (token) => {  
+            if(!token) return response.status(401).send(Error('Not validate credential'));
+            response.status(201).send(token);
+          },
+          (error) => { return response.status(505).send(error); }
+      );
   }
 
+  //Return function to response a server obtain admin token
   private static obtain_admin_token_service() {
-    return (response) =>
-    OauthController.obtain_admin_token().then(
-        (token) => {
-          if(!token) return response.status(401).send(Error('Not validate credential'));
-          response.status(201).send(token);
-        },
-        (error) => { return response.status(505).send(error); }
-    );
+    return (response:Response) =>
+      this.obtain_admin_token().then(
+          (token) => response.status(201).send(token),
+          (error) => response.status(505).send(error) 
+      );
   }
 
-  //Method to server
-	public post_obtain_user_token(requests, response) {
+  //Method to server ///**************************
+
+	public obtain_user_token(requests:Request, response:Response) {
     let secret_code = requests.body.secret_code;
     let userName = requests.body.userName;
     OauthController.obtain_user_token_service(userName, secret_code)(response);
 	}
 
-  public get_obtain_user_token(requests, response) {
-    console.log(requests);
-    let secret_code =  requests.query.secret_code;
-    let userName = requests.query.userName;
-    OauthController.obtain_user_token_service(userName, secret_code)(response);
+  public clean_user_token(requests:Request, response:Response) {
+    let secret_code = requests.body.secret_code;
+    let userName = requests.body.userName;
+    UsersDB.findByUserName(userName).then(
+      (user) => {
+        if(!user || user.secret_code != secret_code) {
+          response.status(401).send('Unauthorized');
+        } else {
+          TokensDB.removeUserToken(user._id).then(
+            () => response.status(204).send(''),
+            (error) => response.status(505).send(error)
+          )
+        }
+      },
+      (error) => response.status(505).send(error)
+    );
   }
 
-  public post_obtain_admin_token(requests, response) {
-    let admin_pass = requests.body.password;
-    let admin_name = requests.body.name;
-    if(admin_name != ConfigServis.admin_name || 
-      admin_pass != ConfigServis.admin_pass) return response.status(401).send('Unauthorized');
-    OauthController.obtain_admin_token_service()(response);
+  public obtain_admin_token(requests:Request, response:Response):void {
+    let admin_pass = requests.body.password || requests.query.pass;
+    let admin_name = requests.body.name || requests.query.name;
+    if(Utils.validateAdmin(admin_name, admin_pass)) {
+      response.status(401).send('Unauthorized');
+    } else {
+      OauthController.obtain_admin_token_service()(response);
+    }
   }
 
-  public get_obtain_admin_token(requests, response) {
-    let admin_pass =  requests.query.pass;
-    let admin_name = requests.query.name;
-    OauthController.obtain_admin_token_service()(response);
+  public clean_admin_token(requests:Request, response:Response):void {
+    let admin_pass = requests.body.password || requests.query.pass;
+    let admin_name = requests.body.name || requests.query.name;
+    if(Utils.validateAdmin(admin_name, admin_pass)) {
+      response.status(401).send('Unauthorized');
+    } else {
+      TokensDB.removeAdminToken().then(
+        () => response.status(204).send(''),
+        (error) => response.status(505).send(error)
+      );
+    }
   }
 }
 export default OauthController;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const service_config_1 = require("../config/service-config");
 class Utils {
     static getUid(length) {
         let uid = '';
@@ -18,6 +19,10 @@ class Utils {
     }
     static validatePass(pass, encr_pass) {
         return pass === encr_pass;
+    }
+    static validateAdmin(adminName, adminPass) {
+        return (adminName != service_config_1.default.admin_name ||
+            adminPass != service_config_1.default.admin_pass);
     }
 }
 exports.Utils = Utils;

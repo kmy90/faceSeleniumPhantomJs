@@ -53,7 +53,7 @@ export class AuthenticateService {
   public static BearerStrategyUser():void {
      passport.use(
         new BearerStrategy((accessToken, done) => {
-        TokensDB.find(accessToken).then((token) => {
+        TokensDB.findByToken(accessToken).then((token) => {
           if (!token) return done(null, false);
           // The request came from a user only since userId is null,
           // therefore the user is passed back instead of a user.
@@ -71,7 +71,7 @@ export class AuthenticateService {
   public static BearerStrategyAdmin():void {
      passport.use('bearer-admin',
         new BearerStrategy((accessToken, done) => {
-        TokensDB.find(accessToken).then((token) => {
+        TokensDB.findByToken(accessToken).then((token) => {
           if (!token || !token.admin) return done(null, false);
             done(null, { admin: true }, { scope: '*' });
         },done);
