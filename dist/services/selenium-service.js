@@ -89,12 +89,10 @@ class SeleniumService {
         });
     }
     logStarTime(step) {
-        let setdate = moment();
-        step["start_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm');
+        step["start_action_time_x"] = moment().utc().format("YYYY-MM-DDTHH:mm:ssZZ");
     }
     logEndTime(step) {
-        let setdate = moment();
-        step["end_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm ');
+        step["end_action_time_x"] = moment().utc().format("YYYY-MM-DDTHH:mm:ssZZ");
     }
 }
 exports.SeleniumService = SeleniumService;
