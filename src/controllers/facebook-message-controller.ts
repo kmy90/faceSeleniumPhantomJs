@@ -1,33 +1,46 @@
 import { Request , Response } from 'express'
 import SeleniumService from '../services/selenium-service';
-import { Step } from '../models';
+import { Step, SeleniumServiceResponse  } from '../models';
 
 export class FacebookMessageController {
+  
   constructor() {}
+
+
    public sendAutomatedMessage(request: Request, response: Response) {
       let selService = new SeleniumService();
+      let proccessedSteps = [];
       //get Url
       selService.getUrl(request.body.endpoint_x).then(() => {
-         let steps = request.body.steps_x;
-         FacebookMessageController.processSteps(steps.reverse(),selService).then(()=>{
-           response.status(201).send('Done')
-      //getting errors processing step       
-      },(err)=>{response.status(500).send(err);console.log('getting errors processing step')});
+         var steps = request.body.steps_x;
+         FacebookMessageController.processSteps(steps.reverse(),selService,proccessedSteps).then((processedSteps)=>{
+           response.status(200).send(FacebookMessageController.buildSeleniumServiceResponse("Success",proccessedSteps,null));
+        //getting errors processing step       
+         },(err)=>{response.status(500).send(FacebookMessageController.buildSeleniumServiceResponse("Fail",proccessedSteps,err))});
       //getting errors processing url
-      },(err) => {response.status(500).send(err);console.log('getting errors processing url')}); 
+      },(err) => {response.status(500).send(FacebookMessageController.buildSeleniumServiceResponse("Fail",proccessedSteps,err))}); 
    }
 
-   private static processSteps(steps:Step[],selService:SeleniumService): Promise<Step> {
+   private static processSteps(steps:Step[],selService:SeleniumService, processedSteps:Step[] ): Promise<Step> {
      return new Promise((resolve,reject)=>{
           let step = steps.pop();
           selService.setStep(step).then(()=>{
+             processedSteps.push(step);
              if(steps.length == 0){
-                  resolve();
+                  resolve(processedSteps);
              }else{
-                this.processSteps(steps,selService).then(resolve, reject);
+                this.processSteps(steps,selService,processedSteps).then(resolve, reject);
              }
          },(err)=>{reject(err)});
      });
+  }
+
+  private static buildSeleniumServiceResponse(status:string, processedSteps:Step[], failReason:string) : SeleniumServiceResponse {
+     let response  =  new SeleniumServiceResponse();
+     response.status = status;
+     response.proccessedSteps = processedSteps;
+     if(failReason) response.message = failReason;
+     return response;
   }
 }
 export default FacebookMessageController;

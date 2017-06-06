@@ -22,7 +22,7 @@ class SeleniumService {
         //if the action_x not require findElement_x action_x:
         if (!findElement_x) {
             if (typeof this[action_x.type_x + 'Handler'] === 'function')
-                return this[action_x.type_x + 'Handler'](action_x);
+                return this[action_x.type_x + 'Handler'](action_x, step);
             else
                 return new Promise((resolve, reject) => { reject('The action "' + action_x.type_x + '" not is supported'); });
         }
@@ -40,44 +40,58 @@ class SeleniumService {
             });
             stringQuery += ']';
             if (typeof this[action_x.type_x + 'Handler'] === 'function')
-                return this[action_x.type_x + 'Handler'](stringQuery, action_x);
+                return this[action_x.type_x + 'Handler'](stringQuery, action_x, step);
             else
                 return new Promise((resolve, reject) => { reject('The action "' + action_x.type_x + '" is not supported'); });
         }
     }
-    sendKeysHandler(stringQuery, action_x) {
+    sendKeysHandler(stringQuery, action_x, step) {
         let { driver } = this;
+        this.logStarTime(step);
         return new Promise((resolve, reject) => {
             let element = driver.findElement(selenium_webdriver_1.By.xpath(stringQuery));
             if (action_x.keypress_x)
-                element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(resolve).catch(reject);
+                element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(() => { this.logEndTime(step); resolve(); }).catch(reject);
             else
-                element.sendKeys(action_x.value_x).then(resolve).catch(reject);
+                element.sendKeys(action_x.value_x).then(() => { this.logEndTime(step); resolve(); }).catch(reject);
         });
     }
-    clickHandler(stringQuery, action_x) {
+    clickHandler(stringQuery, action_x, step) {
         let { driver } = this;
+        this.logStarTime(step);
         return new Promise((resolve, reject) => {
-            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(resolve).catch(reject);
+            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(() => { this.logEndTime(step); resolve(); }).catch(reject);
         });
     }
-    waitHandler(action_x) {
+    waitHandler(action_x, step) {
         let { driver } = this;
+        this.logStarTime(step);
         return new Promise((resolve, reject) => {
             driver.wait(() => {
                 return driver[action_x.for_x]().then((argument) => {
-                    return argument.includes(action_x.includes_x);
+                    if (argument.includes(action_x.includes_x)) {
+                        this.logEndTime(step);
+                        resolve();
+                        return true;
+                    }
+                    reject("'" + action_x.includes_x + "' has been not found it with method " + action_x.for_x);
+                    return false;
                 });
-            }, action_x.timeout).then(resolve).catch(reject);
+            }, action_x.timeout);
         });
     }
-    quitHandler(action_x) {
+    quitHandler(action_x, step) {
         let { driver } = this;
+        this.logStarTime(step);
         return new Promise((resolve, reject) => {
-            driver.quit()
-                .then(resolve)
-                .catch(reject);
+            driver.quit().then(() => { this.logEndTime(step); resolve(); }).catch(reject);
         });
+    }
+    logStarTime(step) {
+        step["start_action_time_x"] = new Date();
+    }
+    logEndTime(step) {
+        step["end_action_time_x"] = new Date();
     }
 }
 exports.SeleniumService = SeleniumService;
