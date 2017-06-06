@@ -11,7 +11,9 @@
     "mongodb": "^2.2.27",
     "passport": "^0.3.2",
     "selenium-webdriver": "^3.4.0",
+    "passport-http": "^0.3.0",
     "passport-http-bearer": "1.0.1",
+    "js-sha3": "^0.5.7",
     "oauth2orize": "1.8.0"
   },
   "devDependencies": {
@@ -24,7 +26,6 @@
     "gulp": "^3.9.1",
     "gulp-typescript": "^3.1.1",
     "install": "^0.10.1",
-    "js-sha3": "^0.5.7",
     "npm": "^4.6.1",
     "ts-loader": "^2.1.0",
     "typescript": "^2.3.3",
