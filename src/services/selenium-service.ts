@@ -93,12 +93,12 @@ export class SeleniumService {
 
     private logStarTime(step:Step):void {
         let setdate = moment();
-        step["start_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm:ss');
+        step["start_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm');
     }
     
     private logEndTime(step:Step):void {
         let setdate = moment();
-        step["end_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm:ss');
+        step["end_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm ');
     }
 
 }
