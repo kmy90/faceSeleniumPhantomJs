@@ -77,9 +77,9 @@ export class OauthController {
 	}
 
   //Create a token for a user
-  private static creat_new_user_token(user:User):Promise<Token>{
+  private static creat_new_user_token(user_id:string):Promise<Token>{
     let token = Utils.getUid(Config.oauth_token_size);
-    return TokensDB.createUserToken(user.id,token); 
+    return TokensDB.createUserToken(user_id,token); 
   }
 
   //Create a token to admin
@@ -89,11 +89,11 @@ export class OauthController {
   }
 
   //Exist only on token active per user
-  private static obtain_user_token_ru(user:User):Promise<Token>{
+  private static obtain_user_token_ru(user_id:string):Promise<Token>{
     return new Promise((resolve, reject) => {
-        TokensDB.findByUserId(user.id).then((token) => {
+        TokensDB.findByUserId(user_id).then((token) => {
           if(!token) {
-              this.creat_new_user_token(user).then(resolve, reject);
+              this.creat_new_user_token(user_id).then(resolve, reject);
           } else {
              resolve(token);
           }
@@ -102,8 +102,8 @@ export class OauthController {
   }
   
   //Have Multiple valid token per user
-  private static obtain_user_token_mt(user:User):Promise<Token>{
-    return this.creat_new_user_token(user); 
+  private static obtain_user_token_mt(user_id:string):Promise<Token>{
+    return this.creat_new_user_token(user_id); 
   }
 
   //Exist only on token active per user
@@ -125,10 +125,10 @@ export class OauthController {
   }
   
   //Token Politic "ONLT_LAST": Create a new token fora a user, older are remove
-  private static obtain_user_token_ol(user:User):Promise<Token>{
+  private static obtain_user_token_ol(user_id:string):Promise<Token>{
     return new Promise((resolve, reject) => { 
-        TokensDB.removeUserToken(user.id).then(
-          ()=>{ this.creat_new_user_token(user).then(resolve, reject);},
+        TokensDB.removeUserToken(user_id).then(
+          ()=>{ this.creat_new_user_token(user_id).then(resolve, reject);},
           reject
         )
     });
@@ -150,9 +150,9 @@ export class OauthController {
       UsersDB.findByUserName(userName).then(
         (user) => {
           if(!user || user.secret_code != secret_code) return resolver(null);
-          if(Config.oauth_token_crate == RE_USE) return this.obtain_user_token_ru(user).then(resolver, reject);
-          if(Config.oauth_token_crate == MULT_TOKEN) return this.obtain_user_token_mt(user).then(resolver, reject);
-          if(Config.oauth_token_crate == ONLY_LAST) return this.obtain_user_token_ol(user).then(resolver, reject)
+          if(Config.oauth_token_crate == RE_USE) return this.obtain_user_token_ru(user._id).then(resolver, reject);
+          if(Config.oauth_token_crate == MULT_TOKEN) return this.obtain_user_token_mt(user._id).then(resolver, reject);
+          if(Config.oauth_token_crate == ONLY_LAST) return this.obtain_user_token_ol(user._id).then(resolver, reject)
         }, reject);
     })
   }
@@ -237,6 +237,10 @@ export class OauthController {
         (error) => response.status(505).send(error)
       );
    //}
+  }
+
+  public test_token(request:any,response:Response):void{
+    response.status(200).send(request.user);
   }
 }
 export default OauthController;

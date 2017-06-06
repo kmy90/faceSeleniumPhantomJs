@@ -31,7 +31,7 @@ export class TokensDB {
         }
     }
 
-    public static find(query):Promise<Token[]> {
+    public static find(query:any):Promise<Token[]> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
             dbc.findCollectionMany(TOKEN_COLECTION, query).then((tokensDb) => {
@@ -41,7 +41,7 @@ export class TokensDB {
         },reject));
     }
 
-    public static findByToken(key):Promise<Token> {
+    public static findByToken(key:string):Promise<Token> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
             dbc.findOneUpdate(TOKEN_COLECTION,{ token:key },{ time:Date.now() }).then((token) => {
@@ -51,10 +51,10 @@ export class TokensDB {
         },reject));
     }
 
-    public static findByUserId(userId):Promise<Token> {
+    public static findByUserId(userId:string):Promise<Token> {
         return new Promise((resolver, reject) =>
         DBConection.init().then((dbc) => {
-            dbc.findOneUpdate(TOKEN_COLECTION,{ userId:userId }, { time:Date.now() }).then((tokensDb) => {
+            dbc.findOneUpdate(TOKEN_COLECTION, { userId:userId }, { time:Date.now() }).then((tokensDb) => {
                resolver(tokensDb);
             },reject);
             dbc.close();
@@ -71,7 +71,7 @@ export class TokensDB {
       },reject));
     }
 
-    public static removeUserToken(userId):Promise<Token> {
+    public static removeUserToken(userId:string):Promise<Token> {
         return new Promise((resolver, reject) =>
             DBConection.init().then((dbc) => {
                 dbc.removeCollectionMany( TOKEN_COLECTION, 
@@ -99,7 +99,7 @@ export class TokensDB {
         },reject));
     }
 
-    public static createAdminToken(token):Promise<Token> {
+    public static createAdminToken(token:string):Promise<Token> {
         return new Promise((resolver, reject)=>
         DBConection.init().then((dbc) =>{
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, admin:true, time:Date.now() }).then(
@@ -110,7 +110,7 @@ export class TokensDB {
         },reject));
     }
 
-    public static createUserToken(userId, token):Promise<Token> {
+    public static createUserToken(userId:string, token:string):Promise<Token> {
         return new Promise((resolver, reject)=>
         DBConection.init().then((dbc) =>{
             dbc.insertCollectionOne(TOKEN_COLECTION, { token, userId, time:Date.now() }).then(

@@ -78,6 +78,12 @@ class DataBaseRouter {
                 dbc.close();
             });
         });
+        this.router.get('/:colec/object/:id', (req, res) => {
+            database_conection_1.default.init().then((dbc) => {
+                dbc.findCollectionOneById(req.params.colec, req.params.id).then((e) => res.status(200).send(e), (e) => res.status(505).send(e));
+                dbc.close();
+            });
+        });
     }
     static getRouter() {
         const dbRouter = new DataBaseRouter();

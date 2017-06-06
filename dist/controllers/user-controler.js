@@ -41,14 +41,18 @@ class UserController {
         let user_id = requests.body.user_id || requests.query.user_id;
         let userName = requests.body.userName || requests.query.userName;
         if (user_id) {
-            db_1.UsersDB.delete_userById(user_id).then(() => response.status(204).send(''), (error) => response.status(505).send(error));
+            console.log(user_id);
+            db_1.UsersDB.delete_userById(user_id).then((ret) => { console.log(ret); response.status(204).send(ret); }, (error) => response.status(505).send(error));
         }
-        else {
+        else if (userName) {
             db_1.UsersDB.findByUserName(userName).then((user) => {
                 if (!user)
                     return response.status(204).send('');
                 db_1.UsersDB.delete_userById(user._id).then(() => response.status(204).send(''), (error) => response.status(505).send(error));
             }, (error) => response.status(505).send(error));
+        }
+        else {
+            response.status(204).send('');
         }
     }
     change_user_secret(requests, response) {
