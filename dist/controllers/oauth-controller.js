@@ -55,9 +55,9 @@ class OauthController {
         }));
     }
     //Create a token for a user
-    static creat_new_user_token(user) {
+    static creat_new_user_token(user_id) {
         let token = utils_1.Utils.getUid(controller_config_1.default.oauth_token_size);
-        return db_1.TokensDB.createUserToken(user.id, token);
+        return db_1.TokensDB.createUserToken(user_id, token);
     }
     //Create a token to admin
     static create_new_admin_token() {
@@ -65,11 +65,11 @@ class OauthController {
         return db_1.TokensDB.createAdminToken(token);
     }
     //Exist only on token active per user
-    static obtain_user_token_ru(user) {
+    static obtain_user_token_ru(user_id) {
         return new Promise((resolve, reject) => {
-            db_1.TokensDB.findByUserId(user.id).then((token) => {
+            db_1.TokensDB.findByUserId(user_id).then((token) => {
                 if (!token) {
-                    this.creat_new_user_token(user).then(resolve, reject);
+                    this.creat_new_user_token(user_id).then(resolve, reject);
                 }
                 else {
                     resolve(token);
@@ -78,8 +78,8 @@ class OauthController {
         });
     }
     //Have Multiple valid token per user
-    static obtain_user_token_mt(user) {
-        return this.creat_new_user_token(user);
+    static obtain_user_token_mt(user_id) {
+        return this.creat_new_user_token(user_id);
     }
     //Exist only on token active per user
     static obtain_admin_token_ru() {
@@ -99,9 +99,9 @@ class OauthController {
         return this.create_new_admin_token();
     }
     //Token Politic "ONLT_LAST": Create a new token fora a user, older are remove
-    static obtain_user_token_ol(user) {
+    static obtain_user_token_ol(user_id) {
         return new Promise((resolve, reject) => {
-            db_1.TokensDB.removeUserToken(user.id).then(() => { this.creat_new_user_token(user).then(resolve, reject); }, reject);
+            db_1.TokensDB.removeUserToken(user_id).then(() => { this.creat_new_user_token(user_id).then(resolve, reject); }, reject);
         });
     }
     //Token Politic "ONLT_LAST": Create a new token to admin, older are remove
@@ -117,11 +117,11 @@ class OauthController {
                 if (!user || user.secret_code != secret_code)
                     return resolver(null);
                 if (controller_config_1.default.oauth_token_crate == RE_USE)
-                    return this.obtain_user_token_ru(user).then(resolver, reject);
+                    return this.obtain_user_token_ru(user._id).then(resolver, reject);
                 if (controller_config_1.default.oauth_token_crate == MULT_TOKEN)
-                    return this.obtain_user_token_mt(user).then(resolver, reject);
+                    return this.obtain_user_token_mt(user._id).then(resolver, reject);
                 if (controller_config_1.default.oauth_token_crate == ONLY_LAST)
-                    return this.obtain_user_token_ol(user).then(resolver, reject);
+                    return this.obtain_user_token_ol(user._id).then(resolver, reject);
             }, reject);
         });
     }
@@ -186,6 +186,9 @@ class OauthController {
         } else {*/
         db_1.TokensDB.removeAdminToken().then(() => response.status(204).send(''), (error) => response.status(505).send(error));
         //}
+    }
+    test_token(request, response) {
+        response.status(200).send(request.user);
     }
 }
 exports.OauthController = OauthController;

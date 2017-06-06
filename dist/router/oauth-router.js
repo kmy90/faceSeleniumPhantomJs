@@ -12,7 +12,8 @@ class OauthRouter {
     init() {
         this.router.delete('/token', this.controller.clean_user_token);
         this.router.post('/token', this.controller.obtain_user_token);
-        this.router.post('/token/admin', this.controller.obtain_admin_token);
+        //this.router.post('/token/admin',this.controller.obtain_admin_token);
+        this.router.get('/token/test', passport.authenticate(['bearer', 'bearer-admin'], { session: false }), this.controller.test_token);
         this.router.get('/token/admin', passport.authenticate('basic-admin', { session: false }), this.controller.obtain_admin_token);
         this.router.delete('/token/admin', passport.authenticate('basic-admin', { session: false }), this.controller.clean_admin_token);
     }
