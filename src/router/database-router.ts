@@ -109,6 +109,15 @@ export class DataBaseRouter {
                 dbc.close()
             });
         });
+        this.router.get('/:colec/object/:id',(req:Request, res:Response)=>{
+            DBConection.init().then((dbc)=>{
+                dbc.findCollectionOneById(req.params.colec,req.params.id).then(
+                    (e)=>res.status(200).send(e),
+                    (e)=>res.status(505).send(e)
+                );
+                dbc.close()
+            });
+        });
     }
 
     public static getRouter():Router{

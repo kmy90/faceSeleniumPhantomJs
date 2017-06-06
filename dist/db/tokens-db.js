@@ -42,8 +42,6 @@ class TokensDB {
     static findByUserId(userId) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
             dbc.findOneUpdate(TOKEN_COLECTION, { userId: userId }, { time: Date.now() }).then((tokensDb) => {
-                console.log(userId);
-                console.log(tokensDb);
                 resolver(tokensDb);
             }, reject);
             dbc.close();

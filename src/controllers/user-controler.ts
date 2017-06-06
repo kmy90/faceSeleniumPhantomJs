@@ -51,11 +51,12 @@ export class UserController {
     let user_id = requests.body.user_id || requests.query.user_id ;
     let userName = requests.body.userName || requests.query.userName;
     if(user_id) {
+      console.log(user_id);
       UsersDB.delete_userById(user_id).then(
-        () => response.status(204).send(''),
+        (ret) => { console.log(ret); response.status(204).send(ret); },
         (error) => response.status(505).send(error)
       );
-    } else {
+    } else if(userName) {
       UsersDB.findByUserName(userName).then(
         (user)=>{
           if(!user) return response.status(204).send('');
@@ -66,6 +67,8 @@ export class UserController {
         },
         (error) => response.status(505).send(error)
       );
+    } else {
+      response.status(204).send('');
     }
   }
 

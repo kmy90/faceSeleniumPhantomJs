@@ -34,6 +34,8 @@ class DataBaseConection {
     }
     // Find some documents
     findCollectionMany(collection, query) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).find(query).toArray((err, docs) => {
                 if (err) {
@@ -47,6 +49,8 @@ class DataBaseConection {
     }
     // Find some documents
     findCollectionOne(collection, query) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).find(query).toArray((err, docs) => {
                 if (err) {
@@ -62,7 +66,25 @@ class DataBaseConection {
         });
     }
     // Find some documents
+    findCollectionOneById(collection, id) {
+        return new Promise((resolver, reject) => {
+            this.db.collection(collection).find({ _id: new mongodb_1.ObjectId(id) }).toArray((err, docs) => {
+                if (err) {
+                    reject(err);
+                }
+                else if (docs.length > 0) {
+                    resolver(docs[0]);
+                }
+                else {
+                    resolver(null);
+                }
+            });
+        });
+    }
+    // Find some documents
     findOneUpdate(collection, query, update) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).findOneAndUpdate(query, { $set: update }, (err, docs) => {
                 if (err) {
@@ -76,6 +98,8 @@ class DataBaseConection {
     }
     // Update document
     updateCollectionOne(collection, query, update) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).updateOne(query, { $set: update }, (err, result) => {
                 if (err) {
@@ -89,6 +113,8 @@ class DataBaseConection {
     }
     // Update document
     updateCollectionMany(collection, query, update) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).updateMany(query, { $set: update }, (err, result) => {
                 if (err) {
@@ -101,13 +127,22 @@ class DataBaseConection {
         });
     }
     removeCollectionOne(collection, query) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).deleteOne(query, (err, result) => {
-                resolver(result);
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolver(result);
+                }
             });
         });
     }
     removeCollectionMany(collection, query) {
+        if (query._id)
+            query._id = new mongodb_1.ObjectId(query._id);
         return new Promise((resolver, reject) => {
             this.db.collection(collection).deleteMany(query, (err, result) => {
                 resolver(result);

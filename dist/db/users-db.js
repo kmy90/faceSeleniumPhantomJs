@@ -42,7 +42,8 @@ class UsersDB {
     }
     static delete_userById(user_id) {
         return new Promise((resolver, reject) => database_conection_1.default.init().then((dbc) => {
-            dbc.removeCollectionOne(USER_COLECTION, { _id: user_id }).then((user) => resolver(user), reject);
+            console.log({ _id: user_id });
+            dbc.removeCollectionOne(USER_COLECTION, { _id: user_id }).then((ret) => resolver(ret), reject);
             dbc.close();
         }, reject));
     }

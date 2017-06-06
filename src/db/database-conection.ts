@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import ConfigDB from '../config/database-config';
 
 export class DataBaseConection {
@@ -7,7 +7,6 @@ export class DataBaseConection {
   constructor(db:any) {
     this.db = db;
   }
-
   // Insert some documents
   public insertCollectionOne(collection:string, obj:any):Promise<any> {
     return new Promise((resolver,reject) => {
@@ -36,6 +35,7 @@ export class DataBaseConection {
 
   // Find some documents
   public findCollectionMany(collection:string, query:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).find(query).toArray((err, docs) => {
         if(err) {
@@ -50,6 +50,7 @@ export class DataBaseConection {
 
   // Find some documents
   public findCollectionOne(collection:string, query:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).find(query).toArray((err, docs) => {
         if(err) {
@@ -64,8 +65,25 @@ export class DataBaseConection {
     });
   }
 
+  // Find some documents
+  public findCollectionOneById(collection:string, id:string):Promise<any> {
+    return new Promise((resolver,reject) => {
+      this.db.collection(collection).find({ _id:new ObjectId(id) }).toArray((err, docs) => {
+        if(err) {
+          reject(err);
+        } else if(docs.length > 0) { 
+          resolver(docs[0]);
+        } else {
+          resolver(null);
+        }
+
+      });
+    });
+  }
+
  // Find some documents
   public findOneUpdate(collection:string, query:any, update:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).findOneAndUpdate(query, { $set: update }, (err, docs) => {
         if(err) {
@@ -79,6 +97,7 @@ export class DataBaseConection {
 
   // Update document
   public updateCollectionOne(collection:string, query:any, update:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).updateOne(query, { $set: update }, (err, result) => {
         if(err) {
@@ -92,6 +111,7 @@ export class DataBaseConection {
 
   // Update document
   public updateCollectionMany(collection:string, query:any, update:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).updateMany(query, { $set: update }, (err, result) => {
         if(err) {
@@ -104,14 +124,20 @@ export class DataBaseConection {
   }
 
   public removeCollectionOne(collection:string, query:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).deleteOne(query, (err, result) => {
-        resolver(result);
+        if(err) {
+          reject(err)
+        } else {
+          resolver(result);
+        }
       });
     });
   }
 
   public removeCollectionMany(collection:string, query:any):Promise<any> {
+    if(query._id) query._id = new ObjectId(query._id);
     return new Promise((resolver,reject) => {
       this.db.collection(collection).deleteMany(query, (err, result) => {
         resolver(result);
