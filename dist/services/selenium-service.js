@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const selenium_webdriver_1 = require("selenium-webdriver");
 const service_config_1 = require("../config/service-config");
+const moment = require("moment-timezone");
 class SeleniumService {
     constructor() {
         this.driver = new selenium_webdriver_1.Builder().forBrowser(service_config_1.default.selenium_selected_browser).build();
@@ -88,10 +89,12 @@ class SeleniumService {
         });
     }
     logStarTime(step) {
-        step["start_action_time_x"] = new Date();
+        let setdate = moment();
+        step["start_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm:ss');
     }
     logEndTime(step) {
-        step["end_action_time_x"] = new Date();
+        let setdate = moment();
+        step["end_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm:ss');
     }
 }
 exports.SeleniumService = SeleniumService;

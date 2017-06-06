@@ -34,7 +34,7 @@ class FacebookMessageController {
     static buildSeleniumServiceResponse(status, processedSteps, failReason) {
         let response = new models_1.SeleniumServiceResponse();
         response.status = status;
-        response.proccessedSteps = processedSteps;
+        response.steps = processedSteps;
         if (failReason)
             response.message = failReason;
         return response;

@@ -1,8 +1,8 @@
 export interface Step {
     findElement_x?: FindElement_x;
     action_x: Action_x;
-    start_action_time_x?:Date; 
-    end_action_time_x?:Date; 
+    start_action_time_x?:string; 
+    end_action_time_x?:string; 
 }
 
 export interface Action_x {

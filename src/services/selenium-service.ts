@@ -1,6 +1,8 @@
 import { Builder, By, until, Key, ThenableWebDriver} from 'selenium-webdriver'
 import { Step } from '../models';
 import Config from '../config/service-config';
+import * as moment from 'moment-timezone';
+
 
 
 export class SeleniumService {
@@ -90,11 +92,13 @@ export class SeleniumService {
     }
 
     private logStarTime(step:Step):void {
-        step["start_action_time_x"] = new Date();
+        let setdate = moment();
+        step["start_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm:ss');
     }
     
     private logEndTime(step:Step):void {
-        step["end_action_time_x"] = new Date();
+        let setdate = moment();
+        step["end_action_time_x"] = setdate.tz("GMT").format('YYYY-MM-DD HH:mm:ss');
     }
 
 }

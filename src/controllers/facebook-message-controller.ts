@@ -38,7 +38,7 @@ export class FacebookMessageController {
   private static buildSeleniumServiceResponse(status:string, processedSteps:Step[], failReason:string) : SeleniumServiceResponse {
      let response  =  new SeleniumServiceResponse();
      response.status = status;
-     response.proccessedSteps = processedSteps;
+     response.steps = processedSteps;
      if(failReason) response.message = failReason;
      return response;
   }
