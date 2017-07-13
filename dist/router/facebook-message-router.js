@@ -9,7 +9,7 @@ class FacebookMessageRouter {
         this.init();
     }
     init() {
-        this.router.post('/send', this.controller.sendAutomatedMessage);
+        this.router.post('/task', this.controller.sendAutomatedMessage);
     }
     static getRouter() {
         const facebookMessageRouter = new FacebookMessageRouter();

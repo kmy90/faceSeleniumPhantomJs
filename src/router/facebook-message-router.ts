@@ -12,7 +12,7 @@ export class FacebookMessageRouter {
     }
     
     init(){
-        this.router.post('/send',this.controller.sendAutomatedMessage);
+        this.router.post('/task',this.controller.sendAutomatedMessage);
     }
 
     public static getRouter():Router {
