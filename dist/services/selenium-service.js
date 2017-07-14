@@ -5,6 +5,9 @@ const service_config_1 = require("../config/service-config");
 const moment = require("moment-timezone");
 class SeleniumService {
     constructor() {
+        this.MSG_NO_FOUND_ELEMENT = 'No found element for query: ';
+        this.MSG_ACTION_NO_SUPPORTED = 'Action no supported: ';
+        this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT = 'Action no supported on element: ';
         this.driver = new selenium_webdriver_1.Builder().forBrowser(service_config_1.default.selenium_selected_browser).build();
     }
     getUrl(url) {
@@ -25,7 +28,7 @@ class SeleniumService {
             if (typeof this[action_x.type_x + 'Handler'] === 'function')
                 return this[action_x.type_x + 'Handler'](action_x, step);
             else
-                return new Promise((resolve, reject) => { reject('The action "' + action_x.type_x + '" not is supported'); });
+                return new Promise((resolve, reject) => { reject(this.MSG_ACTION_NO_SUPPORTED + action_x.type_x); });
         }
         else {
             // building the query to locate the WebElement
@@ -52,7 +55,7 @@ class SeleniumService {
                 if (typeof this[action_x.type_x + 'Handler'] === 'function')
                     return this[action_x.type_x + 'Handler'](stringQuery, action_x, step);
                 else
-                    return new Promise((resolve, reject) => { reject('The action "' + action_x.type_x + '" is not supported'); });
+                    return new Promise((resolve, reject) => { reject(this.MSG_ACTION_NO_SUPPORTED + action_x.type_x); });
             }
         }
     }
@@ -62,16 +65,16 @@ class SeleniumService {
         return new Promise((resolve, reject) => {
             let element = driver.findElement(selenium_webdriver_1.By.xpath(stringQuery));
             if (action_x.keypress_x)
-                element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(() => { this.logEndTime(step); resolve(); }).catch(reject);
+                element.sendKeys(action_x.value_x, selenium_webdriver_1.Key[action_x.keypress_x]).then(() => { this.logEndTime(step); resolve(); }).catch(() => { reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT + stringQuery); });
             else
-                element.sendKeys(action_x.value_x).then(() => { this.logEndTime(step); resolve(); }).catch(reject);
+                element.sendKeys(action_x.value_x).then(() => { this.logEndTime(step); resolve(); }).catch(() => { reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT + stringQuery); });
         });
     }
     clickHandler(stringQuery, action_x, step) {
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {
-            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(() => { this.logEndTime(step); resolve(); }).catch(reject);
+            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).click().then(() => { this.logEndTime(step); resolve(); }).catch(() => { reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT + stringQuery); });
         });
     }
     waitHandler(action_x, step) {
@@ -102,7 +105,7 @@ class SeleniumService {
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {
-            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).then(() => { this.logEndTime(step); resolve(); }).catch(reject);
+            driver.findElement(selenium_webdriver_1.By.xpath(stringQuery)).then(() => { this.logEndTime(step); resolve(); }).catch(() => { reject(this.MSG_NO_FOUND_ELEMENT + stringQuery); });
         });
     }
     logStarTime(step) {

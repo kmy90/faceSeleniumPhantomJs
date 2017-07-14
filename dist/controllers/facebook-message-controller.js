@@ -13,9 +13,9 @@ class FacebookMessageController {
             FacebookMessageController.processSteps(steps.reverse(), selService, proccessedSteps).then((processedSteps) => {
                 response.status(200).send(FacebookMessageController.buildSeleniumServiceResponse("Success", proccessedSteps, null));
                 //getting errors processing step       
-            }, (err) => { response.status(500).send(FacebookMessageController.buildSeleniumServiceResponse("Fail", proccessedSteps, err)); });
+            }, (err) => { response.status(200).send(FacebookMessageController.buildSeleniumServiceResponse("Fail", proccessedSteps, err)); });
             //getting errors processing url
-        }, (err) => { response.status(500).send(FacebookMessageController.buildSeleniumServiceResponse("Fail", proccessedSteps, err)); });
+        }, (err) => { response.status(200).send(FacebookMessageController.buildSeleniumServiceResponse("Fail", proccessedSteps, err)); });
     }
     static processSteps(steps, selService, processedSteps) {
         return new Promise((resolve, reject) => {
