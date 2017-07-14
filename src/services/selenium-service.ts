@@ -102,6 +102,7 @@ export class SeleniumService {
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {
+            driver.close();
             driver.quit().then(()=> { this.logEndTime(step);resolve()}).catch(reject)
         });
     }
