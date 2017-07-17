@@ -19,6 +19,7 @@ export class RutingServer{
     express_server.use(function(req, res, next){
     res.setTimeout(45000, function(){
         res.status(408).send("Request has timed out")});
+        next();
     });
     
     //Developer Services

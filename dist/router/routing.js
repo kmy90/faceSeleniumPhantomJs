@@ -19,6 +19,7 @@ class RutingServer {
             res.setTimeout(45000, function () {
                 res.status(408).send("Request has timed out");
             });
+            next();
         });
         //Developer Services
         express_server.use('/' + API + '/test', test_router_1.default.getRuter());
