@@ -14,7 +14,14 @@ export class RutingServer{
   public static addRutes(express_server:Application) {
     let API =  Config.api_version;
     console.log(API);
-    //Develper Services
+    
+    //default TimeOut Routes 45 seconds:
+    express_server.use(function(req, res, next){
+    res.setTimeout(45000, function(){
+        res.status(408).send("Request has timed out")});
+    });
+    
+    //Developer Services
     express_server.use('/'+API+'/test', TestRouter.getRuter());
     express_server.use('/'+API+'/sandbox/selenium/', FacebookMessageRouter.getRouter());
 

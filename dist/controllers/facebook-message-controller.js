@@ -5,6 +5,7 @@ const models_1 = require("../models");
 class FacebookMessageController {
     constructor() { }
     sendAutomatedMessage(request, response) {
+        console.log('Running Controller FacebookMessageController');
         let selService = new selenium_service_1.default();
         let proccessedSteps = [];
         //get Url

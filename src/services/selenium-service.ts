@@ -3,10 +3,6 @@ import { Step } from '../models';
 import Config from '../config/service-config';
 import * as moment from 'moment-timezone';
 
-
-
-
-
 export class SeleniumService {
     driver : any
     MSG_NO_FOUND_ELEMENT : string = 'No found element for query: '
@@ -15,6 +11,7 @@ export class SeleniumService {
     
     constructor( ) {
         this.driver = new Builder().forBrowser(Config.selenium_selected_browser).build();
+        console.log('Selenium webdriver initialized to ' + Config.selenium_selected_browser);
     }
 
     public getUrl(url:string): Promise<SeleniumService> {
@@ -22,7 +19,10 @@ export class SeleniumService {
          return new Promise((resolve, reject) => {
                 let pr = driver.get(url)
                     .then(resolve)
-                    .catch(reject);
+                    .catch(()=>{
+                        reject();
+                        this.forceQuit()
+                    });
          });
     }
     
@@ -30,12 +30,16 @@ export class SeleniumService {
         let { driver } = this;
         // pointers to step.findElement_x and step.action_x
         let { findElement_x, action_x } = step;
+        console.log('Executing Step');
         console.log(step);
         //if the action_x not require findElement_x action_x:
         if(!findElement_x){
             if(typeof this[action_x.type_x+'Handler'] === 'function')
               return this[action_x.type_x+'Handler'](action_x,step)
-            else return new Promise((resolve,reject)=>{ reject(this.MSG_ACTION_NO_SUPPORTED + action_x.type_x) });
+            else return new Promise((resolve,reject)=>{
+                reject(this.MSG_ACTION_NO_SUPPORTED + action_x.type_x);
+                this.forceQuit() 
+            });
      
        } else {
             // building the query to locate the WebElement
@@ -60,7 +64,10 @@ export class SeleniumService {
             }else{
                 if(typeof this[action_x.type_x+'Handler'] === 'function')
                     return this[action_x.type_x+'Handler'](stringQuery, action_x, step)              
-                else return new Promise((resolve,reject)=>{ reject(this.MSG_ACTION_NO_SUPPORTED + action_x.type_x) });
+                else return new Promise((resolve,reject)=>{ 
+                    reject(this.MSG_ACTION_NO_SUPPORTED + action_x.type_x);
+                    this.forceQuit() 
+                });
             }
         }
     }
@@ -71,7 +78,13 @@ export class SeleniumService {
         return new Promise((resolve, reject) => {
             let element = driver.findElement(By.xpath(stringQuery));
             if(action_x.keypress_x)
-                element.sendKeys(action_x.value_x, Key[action_x.keypress_x]).then(()=> { this.logEndTime(step);resolve()}).catch(()=>{reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT+ stringQuery)})    
+                element.sendKeys(action_x.value_x, Key[action_x.keypress_x]).then(()=> {
+                    this.logEndTime(step);
+                    resolve()
+                }).catch(()=>{
+                    reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT+ stringQuery);
+                    this.forceQuit()
+                })    
             else
                 element.sendKeys(action_x.value_x).then(()=> { this.logEndTime(step);resolve()}).catch(()=>{reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT+ stringQuery)})  
         });
@@ -80,8 +93,13 @@ export class SeleniumService {
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {
-        driver.findElement(By.xpath(stringQuery)).click().then(()=> { this.logEndTime(step);resolve()}).catch(()=>{reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT+ stringQuery)})
-
+        driver.findElement(By.xpath(stringQuery)).click().then(()=> {
+            this.logEndTime(step);
+            resolve();
+        }).catch(()=>{
+            reject(this.MSG_ACTION_NO_SUPPORTED_ON_ELEMENT+ stringQuery);
+            this.forceQuit()
+        });
      });
     }
   
@@ -91,10 +109,16 @@ export class SeleniumService {
         return new Promise((resolve, reject) => {
             driver.wait(() => {
                return driver[action_x.for_x]().then((argument) => {
-                    if( argument.includes(action_x.includes_x)){this.logEndTime(step);resolve();return true}
-                    reject("'"+action_x.includes_x+"' has been not found it with method "+action_x.for_x);return false;
-               });
-           }, action_x.timeout)
+                    if( argument.includes(action_x.includes_x)){
+                        this.logEndTime(step);resolve();
+                        return true;
+                    }
+                    reject("'"+action_x.includes_x+"' has been not found it with method "+action_x.for_x);
+                    return false;
+               })
+           }, action_x.timeout).catch(()=>{
+                this.forceQuit();  
+           });
         });
     }
 
@@ -102,8 +126,10 @@ export class SeleniumService {
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {
-            driver.close();
-            driver.quit().then(()=> { this.logEndTime(step);resolve()}).catch(reject)
+            driver.quit().then(()=> { 
+                this.logEndTime(step);
+                resolve()
+            }).catch(reject)
         });
     }
     
@@ -111,7 +137,13 @@ export class SeleniumService {
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {
-            driver.findElement(By.xpath(stringQuery)).then(()=> { this.logEndTime(step);resolve()}).catch(()=>{reject(this.MSG_NO_FOUND_ELEMENT+ stringQuery)});
+            driver.findElement(By.xpath(stringQuery)).then(()=> { 
+                this.logEndTime(step);
+                resolve()
+            }).catch(()=>{
+                reject(this.MSG_NO_FOUND_ELEMENT+ stringQuery);
+                this.forceQuit()
+            });
         });
     }
 
@@ -121,6 +153,11 @@ export class SeleniumService {
     
     private logEndTime(step:Step):void {
         step["end_action_time_x"] = moment().utc().format("YYYY-MM-DDTHH:mm:ssZZ");
+    }
+
+    public forceQuit(){
+       this.driver.quit();
+       console.log('Driver Closed');
     }
 
 }

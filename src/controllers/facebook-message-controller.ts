@@ -8,6 +8,7 @@ export class FacebookMessageController {
 
 
    public sendAutomatedMessage(request: Request, response: Response) {
+      console.log('Running Controller FacebookMessageController');
       let selService = new SeleniumService();
       let proccessedSteps = [];
       //get Url
