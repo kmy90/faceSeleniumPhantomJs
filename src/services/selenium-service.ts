@@ -133,7 +133,7 @@ export class SeleniumService {
         });
     }
     
-    private justFind(stringQuery:string,step){
+    private justFind(stringQuery:string,step):Promise<SeleniumService>{
         let { driver } = this;
         this.logStarTime(step);
         return new Promise((resolve, reject) => {

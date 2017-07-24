@@ -42,7 +42,7 @@ class UserController {
         let userName = requests.body.userName || requests.query.userName;
         if (user_id) {
             console.log(user_id);
-            db_1.UsersDB.delete_userById(user_id).then((ret) => { console.log(ret); response.status(204).send(ret); }, (error) => response.status(505).send(error));
+            db_1.UsersDB.delete_userById(user_id).then((ret) => { console.log(ret); response.status(204).send(''); }, (error) => response.status(505).send(error));
         }
         else if (userName) {
             db_1.UsersDB.findByUserName(userName).then((user) => {

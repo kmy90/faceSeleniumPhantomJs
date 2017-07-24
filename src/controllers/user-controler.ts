@@ -53,7 +53,7 @@ export class UserController {
     if(user_id) {
       console.log(user_id);
       UsersDB.delete_userById(user_id).then(
-        (ret) => { console.log(ret); response.status(204).send(ret); },
+        (ret) => { console.log(ret); response.status(204).send(''); },
         (error) => response.status(505).send(error)
       );
     } else if(userName) {

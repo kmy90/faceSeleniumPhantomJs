@@ -28,7 +28,7 @@ export class FacebookMessageController {
           selService.setStep(step).then(()=>{
              processedSteps.push(step);
              if(steps.length == 0){
-                  resolve(processedSteps);
+                  resolve(processedSteps[0]);
              }else{
                 this.processSteps(steps,selService,processedSteps).then(resolve, reject);
              }

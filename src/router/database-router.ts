@@ -47,7 +47,7 @@ export class DataBaseRouter {
                 dbc.close();
             }); 
         });
-        this.router.post('/:colec/querry',(req:Request, res:Response)=>{
+        this.router.post('/:colec/query',(req:Request, res:Response)=>{
             DBConection.init().then((dbc)=>{
                 dbc.findCollectionMany(req.params.colec, req.body).then(
                     (e) => res.status(200).send(e),
@@ -56,7 +56,7 @@ export class DataBaseRouter {
                 dbc.close()
             });
         });
-        this.router.delete('/:colec/querry',(req:Request, res:Response)=>{
+        this.router.delete('/:colec/query',(req:Request, res:Response)=>{
             DBConection.init().then((dbc)=>{
                 dbc.removeCollectionMany(req.params.colec, req.body).then(
                     (e) => res.status(200).send(e),
@@ -65,12 +65,12 @@ export class DataBaseRouter {
                 dbc.close()
             });
         });
-        this.router.put('/:colec/querry',(req:Request, res:Response)=>{
+        this.router.put('/:colec/query',(req:Request, res:Response)=>{
             DBConection.init().then((dbc)=>{
-                if(!req.body.querry) {
-                    res.status(505).send('Need Params "querry" and "new"');
+                if(!req.body.query) {
+                    res.status(505).send('Need Params "query" and "new"');
                 } else {
-                    dbc.updateCollectionMany(req.params.colec, req.body.querry, req.body.new).then(
+                    dbc.updateCollectionMany(req.params.colec, req.body.query, req.body.new).then(
                         (e) => res.status(200).send(e),
                         (e) => res.status(505).send(e)
                     );
@@ -78,7 +78,7 @@ export class DataBaseRouter {
                 dbc.close()
             });
         });
-        this.router.post('/:colec/querry/one',(req:Request, res:Response)=>{
+        this.router.post('/:colec/query/one',(req:Request, res:Response)=>{
             DBConection.init().then((dbc)=>{
                 dbc.findCollectionOne(req.params.colec, req.body).then(
                     (e) => res.status(200).send(e),
@@ -87,7 +87,7 @@ export class DataBaseRouter {
                 dbc.close()
             });
         });
-        this.router.delete('/:colec/querry/one',(req:Request, res:Response)=>{
+        this.router.delete('/:colec/query/one',(req:Request, res:Response)=>{
             DBConection.init().then((dbc)=>{
                 dbc.removeCollectionOne(req.params.colec, req.body).then(
                     (e) => res.status(200).send(e),
@@ -96,12 +96,12 @@ export class DataBaseRouter {
                 dbc.close()
             });
         });
-        this.router.put('/:colec/querry/one',(req:Request, res:Response)=>{
+        this.router.put('/:colec/query/one',(req:Request, res:Response)=>{
             DBConection.init().then((dbc)=>{
-                if(!req.body.querry) {
-                    res.status(505).send('Need Params "querry" and "new"');
+                if(!req.body.query) {
+                    res.status(505).send('Need Params "query" and "new"');
                 } else {
-                    dbc.updateCollectionOne(req.params.colec, req.body.querry, req.body.new).then(
+                    dbc.updateCollectionOne(req.params.colec, req.body.query, req.body.new).then(
                         (e) => res.status(200).send(e),
                         (e) => res.status(505).send(e)
                     );
